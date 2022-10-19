@@ -1,18 +1,17 @@
 import 'dart:io';
-
 import 'package:akyatbukid/Models/StatusModel.dart';
+import 'package:akyatbukid/Models/UserModel.dart';
 import 'package:akyatbukid/Services/dataServices.dart';
 import 'package:akyatbukid/Services/storageServices.dart';
-import 'package:akyatbukid/newsfeed/dropdownButton.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 
 class AddStatus extends StatefulWidget {
-  final String currentUserId;
+  final UserModel userModel;
 
-  const AddStatus ({Key key, this.currentUserId}) : super(key: key);
+  const AddStatus({Key? key, required this.userModel}) : super(key: key);
   @override
   AddStatusState createState() => AddStatusState();
 }
@@ -22,17 +21,20 @@ class AddStatusState extends State<AddStatus> {
   final FocusNode _nodeText1 = FocusNode();
   FocusNode writingTextFocus = FocusNode();
   bool _isLoading = false;
+  var selectedItem;
+  var setDefaultItem = true, setDefaultItemModel = true;
   //File _postImageFile;
 
-  String _statusText;
-  File _pickedImage;
+  String? _statusText;
+  File? _pickedImage;
+  ImagePicker picker = ImagePicker();
 
   handleImageFromGallery() async {
     try {
-      File imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
-      if (imageFile != null) {
+      XFile? image = await picker.pickImage(source: ImageSource.gallery);
+      if (image != null) {
         setState(() {
-          _pickedImage = imageFile;
+          _pickedImage = File(image.path);
         });
       }
     } catch (e) {
@@ -96,8 +98,6 @@ class AddStatusState extends State<AddStatus> {
               children: <Widget>[
                 Container(
                   width: size.width,
-                  
-                  
                   child: Padding(
                     padding: const EdgeInsets.only(right: 14.0, left: 10.0),
                     child: Column(
@@ -116,7 +116,7 @@ class AddStatusState extends State<AddStatus> {
                                     width: 40,
                                     height: 40,
                                     child:
-                                        Image.asset('assets/images/logo.png'),
+                                        Image.asset('assets/images/Logo2.png'),
                                   )),
                               Container(
                                   decoration: BoxDecoration(
@@ -155,29 +155,104 @@ class AddStatusState extends State<AddStatus> {
 
                           Padding(
                               padding:
-                                  const EdgeInsets.fromLTRB(50, 15, 15, 14),
+                                  const EdgeInsets.fromLTRB(55, 15, 12, 14),
                               child: Container(
                                   padding: const EdgeInsets.all(1.0),
                                   decoration: BoxDecoration(
                                       border: Border.all(color: Colors.grey),
                                       color: Colors.white,
                                       borderRadius: BorderRadius.circular(5)),
-                                  child: DropdownMenu()))
+                                  child: Container(
+                                      // padding: EdgeInsets.symmetric(
+                                      //     horizontal: 10.0),
+                                      // decoration: BoxDecoration(
+                                      //   color: Colors.white,
+                                      //   border: Border.all(
+                                      //     color: Colors.grey,
+                                      //     width: 0.3,
+                                      //   ),
+                                      //   borderRadius: BorderRadius.all(
+                                      //     Radius.circular(
+                                      //       30.0,
+                                      //     ),
+                                      //   ),
+                                      // ),
+                                      child: Column(children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            SizedBox(width: 20.0),
+                                            StreamBuilder<QuerySnapshot>(
+                                              stream: FirebaseFirestore.instance
+                                                  .collection('bukid')
+                                                  .snapshots(),
+                                              builder: (BuildContext context,
+                                                  AsyncSnapshot<QuerySnapshot>
+                                                      snapshot) {
+                                                if (!snapshot.hasData)
+                                                  return Container();
+                                                return DropdownButton(
+                                                  underline: Container(),
+                                                  isExpanded: false,
+                                                  value: selectedItem,
+                                                  items: snapshot.data!.docs
+                                                      .map((value) {
+                                                    return DropdownMenuItem(
+                                                      value: value.get('name'),
+                                                      child: Text(
+                                                          '${value.get('name')}'),
+                                                    );
+                                                  }).toList(),
+                                                  onChanged: (value) {
+                                                    debugPrint(
+                                                        'selected onchange: $value');
+                                                    setState(
+                                                      () {
+                                                        debugPrint(
+                                                            'make selected: $value');
+
+                                                        selectedItem = value;
+
+                                                        setDefaultItem = false;
+
+                                                        setDefaultItemModel =
+                                                            true;
+                                                      },
+                                                    );
+                                                  },
+                                                  hint: Text(
+                                                    'Choose a mountain',
+                                                    style: TextStyle(
+                                                        color: Color.fromRGBO(
+                                                            153,
+                                                            153,
+                                                            153,
+                                                            1.0)),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ]),
+                                    ),
+                                  ]))))
                         ]),
                   ),
                 ),
-              SizedBox(height: 15),
+                SizedBox(height: 15),
                 Padding(
                   padding: const EdgeInsets.only(left: 10.0, right: 10.0),
                   child: _pickedImage == null
                       ? SizedBox.shrink()
                       : Container(
-                          height: 200,
+                          height: 300,
                           decoration: BoxDecoration(
                               color: Colors.black,
                               image: DecorationImage(
                                 fit: BoxFit.cover,
-                                image: FileImage(_pickedImage),
+                                image: FileImage(_pickedImage!),
                               )),
                         ),
                 ),
@@ -187,23 +262,25 @@ class AddStatusState extends State<AddStatus> {
                     setState(() {
                       _isLoading = true;
                     });
-                    if (_statusText != null && _statusText.isNotEmpty) {
+                    if (_statusText != null && _statusText!.isNotEmpty) {
                       String image;
                       if (_pickedImage == null) {
                         image = '';
                       } else {
                         image = await StorageService.uploadStatusPicture(
-                            _pickedImage);
+                            _pickedImage!);
                       }
                       StatusModel status = StatusModel(
-                        text: _statusText,
+                        text: _statusText!,
                         image: image,
-                        authorId: widget.currentUserId,
+                        authorId: widget.userModel.uid,
+                        bukid: selectedItem,
                         likes: 0,
                         comments: 0,
                         timestamp: Timestamp.fromDate(
                           DateTime.now(),
                         ),
+                        id: '',
                       );
                       DatabaseServices.createStatus(status);
                       Navigator.pop(context);
@@ -228,8 +305,6 @@ class AddStatusState extends State<AddStatus> {
               ],
             ),
           ),
-
-          //Utils.loadingCircle(_isLoading),
         ]));
   }
 

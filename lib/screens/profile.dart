@@ -1,23 +1,32 @@
+import 'package:akyatbukid/profile/events/HikerCompletedEvent.dart';
+import 'package:akyatbukid/profile/events/HikerUpcomingEvent.dart';
+import 'package:akyatbukid/Models/EventModel.dart';
 import 'package:akyatbukid/Models/StatusModel.dart';
 import 'package:akyatbukid/Models/UserModel.dart';
-import 'package:akyatbukid/Services/auth_services.dart';
+import 'package:akyatbukid/profile/events/OperatorCompletedEvent.dart';
+import 'package:akyatbukid/profile/events/OperatorUpcomingEvent.dart';
+import 'package:akyatbukid/Services/authServices.dart';
 import 'package:akyatbukid/Services/dataServices.dart';
 import 'package:akyatbukid/constant/constant.dart';
-import 'package:akyatbukid/homepage.dart';
-import 'package:akyatbukid/newsfeed/mediaContainer.dart';
+import 'package:akyatbukid/controller/user_controller.dart';
+import 'package:akyatbukid/profile/mediaContainer.dart';
 import 'package:akyatbukid/newsfeed/statusContainer.dart';
 import 'package:akyatbukid/profile/peers.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:akyatbukid/profile/editprofile.dart';
 
+import '../homepage.dart';
 
 class ProfilePage extends StatefulWidget {
-  final String currentUserId;
-  final String visitedUserId;
-
-  const ProfilePage({Key key, this.currentUserId, this.visitedUserId})
-      : super(key: key);
+  static const String id = 'profile';
+  final UserModel userModel;
+  const ProfilePage({
+    Key? key,
+    required this.userModel,
+  }) : super(key: key);
 
   @override
   ProfilePageState createState() => ProfilePageState();
@@ -30,6 +39,8 @@ class ProfilePageState extends State<ProfilePage> {
   int _profileSegmentedValue = 0;
   List<StatusModel> _allStatus = [];
   List<StatusModel> _mediaStatus = [];
+  List<EventModel> _events = [];
+  bool _loading = false;
 
   Map<int, Widget> _profileTabs = <int, Widget>{
     0: Padding(
@@ -57,17 +68,6 @@ class ProfilePageState extends State<ProfilePage> {
     2: Padding(
       padding: EdgeInsets.symmetric(vertical: 10),
       child: Text(
-        'Peers',
-        style: TextStyle(
-          fontSize: 13,
-          fontWeight: FontWeight.w700,
-          color: Colors.black,
-        ),
-      ),
-    ),
-    3: Padding(
-      padding: EdgeInsets.symmetric(vertical: 10),
-      child: Text(
         'Events',
         style: TextStyle(
           fontSize: 13,
@@ -89,80 +89,87 @@ class ProfilePageState extends State<ProfilePage> {
                 itemCount: _allStatus.length,
                 itemBuilder: (context, index) {
                   return StatusContainer(
-                    currentUserId: widget.currentUserId,
+                    userModel: widget.userModel,
                     author: author,
                     status: _allStatus[index],
                   );
                 });
-        break;
+
       case 1:
         return
             // Center(child: Text('Media'));
-            Container
-            (
-              // margin:EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
-               padding: EdgeInsets.only(top: 10.0), 
-              // color: Colors.amber,
-              child: GridView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: _mediaStatus.length,
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    mainAxisSpacing: 10,
-                    crossAxisSpacing: 10,
-                    childAspectRatio: 1.0,
-                  ),
-                  itemBuilder: (context, index) {
-                    return MediaContainer(
-                      currentUserId: widget.currentUserId,
-                      author: author,
-                      status: _mediaStatus[index],
-                    );
-                  }),
-            );
-        break;
+            Container(
+          // margin:EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+          padding: EdgeInsets.only(top: 10.0),
+          // color: Colors.amber,
+          child: GridView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: _mediaStatus.length,
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                mainAxisSpacing: 10,
+                crossAxisSpacing: 10,
+                childAspectRatio: 1.0,
+              ),
+              itemBuilder: (context, index) {
+                return MediaContainer(
+                  userModel: widget.userModel,
+                  author: author,
+                  status: _mediaStatus[index],
+                );
+              }),
+        );
       case 2:
-        return 
-        // Center(child: Text('Peers'));
-        ListView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            // itemCount: _mediaTweets.length,
-            // followersRef.document(widget.uid).collection('userFollowers').snapshots(),
-            itemBuilder: (context, index) {
-              return Peers(
-                currentUserId: widget.currentUserId,
-                //  author: author,
-                // tweet: _mediaTweets[index],
-              );
+        return StreamBuilder<DocumentSnapshot>(
+            stream: UserController().getUser(id: widget.userModel.uid),
+            builder: (context, snapshot) {
+              try {
+                if (!snapshot.data!.exists) return const Text("Loading");
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                UserModel userModel = UserModel.fromDoc(doc: snapshot.data!);
+
+                return SizedBox(
+                  child: userModel.usertype == 'H I K E R'
+                      ? SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              HikerUpcomingEvent(userModel: userModel),
+                              HikerCompletedEvent(
+                                userModel: userModel,
+                              )
+                            ],
+                          ),
+                        )
+                      : Column(
+                          children: [
+                            OperatorUpcomingEvent(
+                              userModel: userModel,
+                            ),
+                            OperatorCompletedEvent(
+                              userModel: userModel,
+                            )
+                          ],
+                        ),
+                );
+              } catch (e) {
+                return Text("Loading...");
+              }
             });
-        break;
-      case 3:
-        return Center(child: Text('Events'));
-        // ListView.builder(
-        //     shrinkWrap: true,
-        //     physics: NeverScrollableScrollPhysics(),
-        //     itemCount: _mediaTweets.length,
-        //     itemBuilder: (context, index) {
-        //       return TweetContainer(
-        //         currentUserId: widget.currentUserId,
-        //         author: author,
-        //         tweet: _mediaTweets[index],
-        //       );
-        //     });
-        break;
       default:
         return Center(
             child: Text('Something wrong', style: TextStyle(fontSize: 25)));
-        break;
     }
   }
 
   getFollowersCount() async {
     int followersCount =
-        await DatabaseServices.followersNum(widget.visitedUserId);
+        await DatabaseServices.followersNum(widget.userModel.uid);
     if (mounted) {
       setState(() {
         _followersCount = followersCount;
@@ -172,7 +179,7 @@ class ProfilePageState extends State<ProfilePage> {
 
   getFollowingCount() async {
     int followingCount =
-        await DatabaseServices.followingNum(widget.visitedUserId);
+        await DatabaseServices.followingNum(widget.userModel.uid);
     if (mounted) {
       setState(() {
         _followingCount = followingCount;
@@ -189,7 +196,8 @@ class ProfilePageState extends State<ProfilePage> {
   }
 
   unFollowUser() {
-    DatabaseServices.unFollowUser(widget.currentUserId, widget.visitedUserId);
+    DatabaseServices.unFollowUser(
+        FirebaseAuth.instance.currentUser!.uid, widget.userModel.uid);
     setState(() {
       _isFollowing = false;
       _followersCount--;
@@ -197,7 +205,8 @@ class ProfilePageState extends State<ProfilePage> {
   }
 
   followUser() {
-    DatabaseServices.followUser(widget.currentUserId, widget.visitedUserId);
+    DatabaseServices.followUser(
+        FirebaseAuth.instance.currentUser!.uid, widget.userModel.uid);
     setState(() {
       _isFollowing = true;
       _followersCount++;
@@ -206,20 +215,26 @@ class ProfilePageState extends State<ProfilePage> {
 
   setupIsFollowing() async {
     bool isFollowingThisUser = await DatabaseServices.isFollowingUser(
-        widget.currentUserId, widget.visitedUserId);
+        FirebaseAuth.instance.currentUser!.uid, widget.userModel.uid);
     setState(() {
       _isFollowing = isFollowingThisUser;
     });
   }
 
   getAllStatus() async {
-    List<StatusModel> userStatus =
-        await DatabaseServices.getUserStatus(widget.visitedUserId);
+    setState(() {
+      _loading = true;
+    });
+    List<StatusModel>? userStatus =
+        (await DatabaseServices.getUserStatus(widget.userModel.uid))
+            .cast<StatusModel>();
+
     if (mounted) {
       setState(() {
         _allStatus = userStatus;
         _mediaStatus =
             _allStatus.where((element) => element.image.isNotEmpty).toList();
+        _loading = false;
       });
     }
   }
@@ -236,228 +251,265 @@ class ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: FutureBuilder(
-            future: usersRef.doc(widget.visitedUserId).get(),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (!snapshot.hasData) {
-                return Center(
-                  child: CircularProgressIndicator(
-                    valueColor:
-                        AlwaysStoppedAnimation(Color.fromRGBO(69, 95, 70, 1.0)),
+        body: ListView(
+            physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics()),
+            children: [
+          Column(children: <Widget>[
+            Column(children: [
+              Container(
+                child:
+                    Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+                  _loading ? LinearProgressIndicator() : SizedBox.shrink(),
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: FirebaseAuth.instance.currentUser!.uid ==
+                            widget.userModel.uid
+                        ? PopupMenuButton(
+                            icon: Icon(
+                              Icons.more_horiz,
+                              color: Colors.black,
+                              size: 30,
+                            ),
+                            itemBuilder: (_) {
+                              return <PopupMenuItem<String>>[
+                                new PopupMenuItem(
+                                  child: Text('Logout'),
+                                  value: 'logout',
+                                )
+                              ];
+                            },
+                            onSelected: (selectedItem) {
+                              if (selectedItem == 'logout')
+                                AuthService.logout();
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HomePage()),
+                              );
+                            })
+                        : Column(
+                            children: [
+                              AppBar(
+                                backgroundColor: Colors.white,
+                                iconTheme: IconThemeData(color: Colors.black),
+                                title: Image(
+                                  image: AssetImage('assets/images/Logo2.png'),
+                                  width: 100.0,
+                                  height: 100.0,
+                                ),
+                                centerTitle: true,
+                              ),
+                              SizedBox(height: 40),
+                            ],
+                          ),
                   ),
-                );
-              }
-              UserModel userModel = UserModel.fromDoc(snapshot.data);
-              return ListView(
-                  physics: const BouncingScrollPhysics(
-                      parent: AlwaysScrollableScrollPhysics()),
-                  children: [
-                    Column(children: <Widget>[
-                      Column(children: [
-                        Container(
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Align(
-                                    alignment: Alignment.topRight,
-                                    child: widget.currentUserId ==
-                                            widget.visitedUserId
-                                        ? PopupMenuButton(
-                                            icon: Icon(
-                                              Icons.more_horiz,
-                                              color: Colors.black,
-                                              size: 30,
-                                            ),
-                                            itemBuilder: (_) {
-                                              return <PopupMenuItem<String>>[
-                                                new PopupMenuItem(
-                                                  child: Text('Logout'),
-                                                  value: 'logout',
-                                                )
-                                              ];
-                                            },
-                                            onSelected: (selectedItem) {
-                                              if (selectedItem == 'logout')
-                                                AuthService.logout();
-                                              Navigator.pushReplacement(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          HomePage()));
-                                            })
-                                        : SizedBox()),
-                                Container(
-                                    transform: Matrix4.translationValues(
-                                        0.0, -20.0, 0.0),
-                                    child: CircleAvatar(
-                                        radius: 52,
-                                        backgroundImage: userModel
-                                                .profilePicture.isEmpty
-                                            ? AssetImage(
-                                                'assets/images/placeholder.png')
-                                            : NetworkImage(
-                                                userModel.profilePicture))),
-                                Container(
-                                    transform: Matrix4.translationValues(
-                                        0.0, -25.0, 0.0),
-                                    width: 80,
-                                    height: 20,
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 3),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        color: Colors.green[700]),
-                                    child: Center(
-                                        child: Text("begginer",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 12)))),
-                                Container(
-                                    transform: Matrix4.translationValues(
-                                        0.0, -16.0, 0.0),
-                                    child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(userModel.fname,
-                                              style: TextStyle(
-                                                  fontSize: 19,
-                                                  fontWeight: FontWeight.bold)),
-                                          SizedBox(width: 5),
-                                          Text(userModel.lname,
-                                              style: TextStyle(
-                                                  fontSize: 19,
-                                                  fontWeight: FontWeight.bold))
-                                        ])),
-                                Container(
-                                    transform: Matrix4.translationValues(
-                                        0.0, -15.0, 0.0),
-                                    child: Text(userModel.bio,
-                                        style: TextStyle(fontSize: 14))),
-                                Container(
-                                    transform: Matrix4.translationValues(
-                                        0.0, -8.0, 0.0),
-                                    width: 80,
-                                    height: 20,
-                                    child: widget.currentUserId ==
-                                            widget.visitedUserId
-                                        ? ElevatedButton(
-                                            onPressed: () async {
-                                              await Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        EditProfile(
-                                                            user: userModel)),
-                                              );
-                                              setState(() {});
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                                primary: Colors.grey,
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20.0))),
-                                            child: Text('Edit',
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 11)),
-                                          )
-                                        : ElevatedButton(
-                                            onPressed: () {
-                                              followOrUnFollow();
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                                primary: _isFollowing
-                                                    ? Colors.white
-                                                    : Colors.grey,
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20.0))),
-                                            child: Text(
-                                                _isFollowing
-                                                    ? 'Following'
-                                                    : 'Follow',
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 11)),
-                                          )),
-                                SizedBox(height: 5),
-                                Container(
-                                  transform:
-                                      Matrix4.translationValues(0.0, -8.0, 0.0),
-                                  width: 80,
-                                  height: 20,
-                                  child: ElevatedButton(
-                                    onPressed: () {},
-                                    style: ElevatedButton.styleFrom(
-                                        primary: Colors.grey,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20.0))),
-                                    child: Text('Message',
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 11)),
-                                  ),
-                                ),
-                                SizedBox(height: 5),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      '$_followingCount Following',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500,
-                                        letterSpacing: 2,
-                                      ),
-                                    ),
-                                    SizedBox(width: 20),
-                                    Text(
-                                      '$_followersCount Followers',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500,
-                                        letterSpacing: 2,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ]),
-                        )
-                      ]),
-                      SizedBox(height: 10),
-                      Container(
-                          //height:50,
-                          width: MediaQuery.of(context).size.width,
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20)),
-                                child: CupertinoSlidingSegmentedControl(
-                                  groupValue: _profileSegmentedValue,
-                                  thumbColor: Colors.orange[400],
-                                  backgroundColor: Colors.transparent,
-                                  children: _profileTabs,
-                                  onValueChanged: (i) {
-                                    setState(() {
-                                      _profileSegmentedValue = i;
-                                    });
-                                  },
-                                )),
-                          )),
-                      // SizedBox(height: 5),
-                      Padding(
-                        padding: const EdgeInsets.only(left:12.0,right: 12.0),
-                        child: Divider(
-                         
+
+                  Container(
+                      transform: Matrix4.translationValues(0.0, -20.0, 0.0),
+                      child: CircleAvatar(
+                        radius: 52,
+                        backgroundImage: widget.userModel.profilePicture.isEmpty
+                            ? AssetImage('assets/images/placeholder.png')
+                            : NetworkImage(widget.userModel.profilePicture)
+                                as ImageProvider,
+                      )),
+                  Container(
+                      alignment: Alignment.center,
+                      transform: Matrix4.translationValues(0.0, -25.0, 0.0),
+                      width: 100,
+                      height: 20,
+                      padding: EdgeInsets.symmetric(horizontal: 3),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.green[400]),
+                      child: Center(
+                          child: Text(widget.userModel.usertype,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold)))),
+                  Container(
+                      transform: Matrix4.translationValues(0.0, -16.0, 0.0),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(widget.userModel.fname,
+                                style: TextStyle(
+                                    fontSize: 19, fontWeight: FontWeight.bold)),
+                            SizedBox(width: 5),
+                            Text(widget.userModel.lname,
+                                style: TextStyle(
+                                    fontSize: 19, fontWeight: FontWeight.bold))
+                          ])),
+                  Container(
+                      transform: Matrix4.translationValues(0.0, -15.0, 0.0),
+                      child: Text(widget.userModel.bio,
+                          style: TextStyle(fontSize: 14))),
+                  SizedBox(height: 5),
+                  Container(
+                    transform: Matrix4.translationValues(0.0, -8.0, 0.0),
+                    width: 80,
+                    height: 20,
+                    child: FirebaseAuth.instance.currentUser!.uid ==
+                            widget.userModel.uid
+                        ? ElevatedButton(
+                            onPressed: () async {
+                              setState(() {
+                                _loading = true;
+                              });
+                              await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        EditProfile(user: widget.userModel)),
+                              );
+                              setState(() {
+                                _loading = false;
+                              });
+                            },
+                            style: ElevatedButton.styleFrom(
+                                primary: Colors.grey,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0))),
+                            child: Text('Edit',
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 11)),
+                          )
+                        : ElevatedButton(
+                            onPressed: () {
+                              followOrUnFollow();
+                            },
+                            style: ElevatedButton.styleFrom(
+                                primary:
+                                    _isFollowing ? Colors.white : Colors.grey,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0))),
+                            child: Text(_isFollowing ? 'Following' : 'Follow',
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 11)),
+                          ),
+                  ),
+                  SizedBox(height: 5),
+                  Container(
+                      transform: Matrix4.translationValues(0.0, -8.0, 0.0),
+                      width: 80,
+                      height: 20,
+                      child: FirebaseAuth.instance.currentUser!.uid ==
+                              widget.userModel.uid
+                          ? SizedBox(height: 1)
+                          : ElevatedButton(
+                              onPressed: () {},
+                              style: ElevatedButton.styleFrom(
+                                  primary: Colors.grey,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(20.0))),
+                              child: Text('Message',
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 11)),
+                            )),
+                  // SizedBox(height: 5),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => FollowersScreen(
+                                        followersCount: _followersCount,
+                                        followingCount: _followingCount,
+                                        currentUserId: widget.userModel.uid,
+                                        selectedTab: 1,
+                                        updateFollowersCount: (count) {
+                                          setState(
+                                              () => _followersCount = count);
+                                        },
+                                        updateFollowingCount: (count) {
+                                          setState(
+                                              () => _followingCount = count);
+                                        },
+                                        user: widget.userModel,
+                                        visitedUserId: widget.userModel.uid,
+                                      )));
+                        },
+                        child: Text(
+                          '$_followingCount Following',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            letterSpacing: 2,
+                          ),
                         ),
                       ),
-                      buildProfileWidgets(userModel),
-                    ]),
-                  ]);
-            }));
+                      SizedBox(width: 20),
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => FollowersScreen(
+                                        followersCount: _followersCount,
+                                        followingCount: _followingCount,
+                                        currentUserId: widget.userModel.uid,
+                                        selectedTab: 0,
+                                        updateFollowersCount: (count) {
+                                          setState(
+                                              () => _followersCount = count);
+                                        },
+                                        updateFollowingCount: (count) {
+                                          setState(
+                                              () => _followingCount = count);
+                                        },
+                                        user: widget.userModel,
+                                        visitedUserId: widget.userModel.uid,
+                                      )));
+                        },
+                        child: Text(
+                          '$_followersCount Followers',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            letterSpacing: 2,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ]),
+              )
+            ]),
+            SizedBox(height: 10),
+            Container(
+                //height:50,
+                width: MediaQuery.of(context).size.width,
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20)),
+                      child: CupertinoSlidingSegmentedControl(
+                        groupValue: _profileSegmentedValue,
+                        thumbColor: Colors.orangeAccent,
+                        backgroundColor: Colors.transparent,
+                        children: _profileTabs,
+                        onValueChanged: (i) {
+                          setState(() {
+                            _profileSegmentedValue = i as int;
+                          });
+                        },
+                      )),
+                )),
+            // SizedBox(height: 5),
+            Padding(
+              padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+              child: Divider(),
+            ),
+            buildProfileWidgets(widget.userModel),
+          ]),
+        ]));
   }
 }

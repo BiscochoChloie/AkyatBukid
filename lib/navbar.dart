@@ -1,16 +1,15 @@
-import 'package:akyatbukid/newsfeed/feed1.dart';
-import 'package:flutter/material.dart';
-import 'package:akyatbukid/constant/constant.dart';
+import 'package:akyatbukid/Models/UserModel.dart';
+import 'package:akyatbukid/messages/ChatScreen.dart';
 import 'package:akyatbukid/newsfeed/feed.dart';
+import 'package:flutter/material.dart';
 import 'package:akyatbukid/screens/booking.dart';
-import 'package:akyatbukid/screens/message.dart';
-import 'package:akyatbukid/screens/notification.dart';
+import 'screens/notification.dart';
 import 'package:akyatbukid/screens/profile.dart';
 
 class NavPage extends StatefulWidget {
-  final String currentUserId;
+  final UserModel userModel;
 
-  const NavPage({Key key, this.currentUserId}) : super(key: key);
+  const NavPage({Key? key, required this.userModel}) : super(key: key);
 
   @override
   NavPageState createState() => NavPageState();
@@ -22,22 +21,26 @@ class NavPageState extends State<NavPage> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> tabs = [
-      FeedPage1(currentUserId:widget.currentUserId),
-      BookingPage(currentUserId:widget.currentUserId),
-      MessagePage(),
-      NotificationPage(),
+      FeedPage(
+        userModel: widget.userModel,
+      ),
+      BookingPage(
+        userModel: widget.userModel,
+      ),
+      ChatScreen(userModel: widget.userModel),
+      NotifScreen(),
       ProfilePage(
-        currentUserId: widget.currentUserId,
-        visitedUserId: widget.currentUserId,
+        userModel: widget.userModel,
       ),
     ];
 
     return Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           backgroundColor: Colors.white,
           iconTheme: IconThemeData(color: Colors.black),
           title: Image(
-            image: AssetImage('assets/images/logo.png'),
+            image: AssetImage('assets/images/Logo2.png'),
             width: 100.0,
             height: 100.0,
           ),
@@ -60,10 +63,8 @@ class NavPageState extends State<NavPage> {
             BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
           ],
         ),
-        body: 
-        Container(
+        body: Container(
           child: tabs[selectedIndex],
-        )
-        );
+        ));
   }
 }

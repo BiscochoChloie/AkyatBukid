@@ -8,9 +8,13 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 class MediaContainer extends StatefulWidget {
   final StatusModel status;
   final UserModel author;
-  final String currentUserId;
+  final UserModel userModel;
 
-  const MediaContainer({Key key, this.status, this.author, this.currentUserId})
+  const MediaContainer(
+      {Key? key,
+      required this.status,
+      required this.author,
+      required this.userModel})
       : super(key: key);
   @override
   _MediaContainerState createState() => _MediaContainerState();

@@ -6,9 +6,14 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        elevation: 0,
+        toolbarHeight: 0,
+      ),
       backgroundColor: Color.fromRGBO(69, 95, 70, 1.0),
       body: Column(children: <Widget>[
-        Image(image: AssetImage("assets/images/logo.png")),
+        Image(image: AssetImage("assets/images/Logo1.png")),
         ElevatedButton(
           onPressed: () {
             Navigator.push(

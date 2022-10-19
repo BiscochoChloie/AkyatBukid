@@ -5,18 +5,20 @@ class StatusModel {
   String authorId;
   String text;
   String image;
+  String bukid;
   Timestamp timestamp;
   int likes;
   int comments;
 
   StatusModel(
-      {this.id,
-      this.authorId,
-      this.text,
-      this.image,
-      this.timestamp,
-      this.likes,
-      this.comments});
+      {required this.id,
+      required this.authorId,
+      required this.text,
+      required this.image,
+       required this.bukid,
+      required this.timestamp,
+      required this.likes,
+      required this.comments});
 
   factory StatusModel.fromDoc(DocumentSnapshot doc) {
     return StatusModel(
@@ -24,6 +26,7 @@ class StatusModel {
       authorId: doc['authorId'],
       text: doc['text'],
       image: doc['image'],
+      bukid: doc['bukid'],
       timestamp: doc['timestamp'],
       likes: doc['likes'],
       comments: doc['comments'],

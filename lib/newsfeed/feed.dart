@@ -1,81 +1,179 @@
-import 'package:akyatbukid/screens/booking.dart';
+import 'package:akyatbukid/newsfeed/search.dart';
 import 'package:flutter/material.dart';
+import 'package:akyatbukid/constant/constant.dart';
+import 'package:akyatbukid/Models/StatusModel.dart';
+import 'package:akyatbukid/Models/UserModel.dart';
 import 'package:akyatbukid/newsfeed/addStatus.dart';
+import 'package:akyatbukid/Services/dataServices.dart';
+import 'package:akyatbukid/newsfeed/statusContainer.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class ThreadPostData {
-  final String userName;
-  final String userThumbnail;
-  final int postTimeStamp;
-  final String postContent;
-  final String postImage;
-  final int postLikeCount;
-  final int postCommentCount;
+class FeedPage extends StatefulWidget {
+  final UserModel userModel;
 
-  ThreadPostData ({
-     this.userName,
-     this.userThumbnail,
-     this.postTimeStamp,
-     this.postContent,
-     this.postImage,
-     this.postLikeCount,
-     this.postCommentCount
-  });
-}
+  const FeedPage({Key? key, required this.userModel}) : super(key: key);
 
-class FeedPage1 extends StatefulWidget{
-  final String currentUserId;
-
-    
-
-  const FeedPage1 ({Key key, this.currentUserId}) : super(key: key);
   @override
-  FeedPage1State createState() => FeedPage1State();
+  FeedPageState createState() => FeedPageState();
 }
 
-class FeedPage1State extends State<FeedPage1> {
- 
-  List<ThreadPostData> dummyData = [
-    new ThreadPostData(userName: "Nathalie", userThumbnail: "", postTimeStamp: DateTime.now().subtract(new Duration(seconds: 10)).millisecondsSinceEpoch, postContent: "Hello", postLikeCount: 5, postCommentCount: 2, postImage: ''),
-    new ThreadPostData(userName: "Jo", userThumbnail: "", postTimeStamp: DateTime.now().subtract(new Duration(seconds: 10)).millisecondsSinceEpoch, postContent: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello", postLikeCount: 5, postCommentCount: 2, postImage: ''),
-    new ThreadPostData(userName: "Nicole", userThumbnail: "", postTimeStamp: DateTime.now().subtract(new Duration(seconds: 10)).millisecondsSinceEpoch, postContent: "Hello", postLikeCount: 5, postCommentCount: 2, postImage: ''),
-    new ThreadPostData(userName: " Biscocho  ", userThumbnail: "", postTimeStamp: DateTime.now().subtract(new Duration(seconds: 10)).millisecondsSinceEpoch, postContent: "Hello", postLikeCount: 5, postCommentCount: 2, postImage: ''),
+class FeedPageState extends State<FeedPage> {
+  List<StatusModel> _followingStatus = [];
+  bool _loading = false;
 
-  ];
+  Future<QuerySnapshot>? _users;
+  TextEditingController _searchController = TextEditingController();
 
-  bool _isLoading = false;
-  @override 
-  void initState() {
-    super.initState();
+  clearSearch() {
+    _searchController.clear();
   }
 
-  Future<void> _takeUserData() async{
+  buildStatus(StatusModel status, UserModel author) {
+    return Container(
+      child: StatusContainer(
+        status: status,
+        author: author,
+        userModel: widget.userModel,
+      ),
+    );
+  }
+
+  showFollowingStatus() {
+    List<Widget> followingStatusList = [];
+    for (StatusModel status in _followingStatus) {
+      followingStatusList.add(FutureBuilder(
+          future: usersRef.doc(status.authorId).get(),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.hasData) {
+              UserModel author = UserModel.fromDoc(doc: snapshot.data);
+              return buildStatus(status, author);
+            } else {
+              return SizedBox.shrink();
+            }
+          }));
+    }
+    return followingStatusList;
+  }
+
+  getFollowingStatus() async {
+    List<String> userFollowingIds = await DatabaseServices.getUserFollowingIds(widget.userModel.uid);
+    QuerySnapshot snapshot = await statusRef
+        .doc(widget.userModel.uid)
+        .collection('userStatus')
+        .orderBy('timestamp', descending: true)
+        .get();
+    List<StatusModel> _followingStatus = snapshot.docs.map((doc) => StatusModel.fromDoc(doc)).toList();
+
     setState(() {
-      _isLoading = true;
+      _followingStatus.forEach((element) {
+        if(this._followingStatus.where((st) =>st.id==element.id).isEmpty){
+          print(element.authorId);
+          this._followingStatus.add(element);
+        }
+      });
     });
+    userFollowingIds.forEach((id) async {
+      QuerySnapshot snapshot = await statusRef
+          .doc(id)
+          .collection('userStatus')
+          .orderBy('timestamp', descending: true)
+          .get();
+      List<StatusModel> _followingStatus = snapshot.docs.map((doc) => StatusModel.fromDoc(doc)).toList();
+      setState(() {
+        _followingStatus.forEach((element) {
+          if(this._followingStatus.where((st) =>st.id==element.id).isEmpty){
+            this._followingStatus.add(element);
+          }
+        });
+      });
+    });
+
   }
+
+
 
   void _incrementCounter() {
-    Navigator.push(context,MaterialPageRoute(builder: (context) => AddStatus(currentUserId:widget.currentUserId)));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => AddStatus(userModel: widget.userModel)));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getFollowingStatus();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: <Widget> [
-          ListView(
-            shrinkWrap: true, 
-            children: dummyData.map(_listTile).toList()
+
+      backgroundColor: Colors.white,
+      body: RefreshIndicator(
+        onRefresh: () => getFollowingStatus(),
+        child: ListView(
+          physics: BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
           ),
-          _isLoading ? Positioned(
-            child: Container (
-              child: Center(
-                child: CircularProgressIndicator(),
+          children: [
+            _loading ? LinearProgressIndicator() : SizedBox.shrink(),
+            Container(
+              padding: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 20.0),
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.symmetric(vertical: 15),
+                  hintText: 'Search',
+                  hintStyle: TextStyle(color: Colors.grey),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none),
+                  prefixIcon: Icon(Icons.search, color: Colors.black),
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.clear, color: Colors.grey[400]),
+                    onPressed: () {},
+                  ),
+                  filled: true,
+                ),
+                readOnly: true,
+                enableInteractiveSelection: false,
+                // focusNode: FocusNode(),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SearchPage(
+                                userModel: widget.userModel,
+                              )));
+                },
               ),
-              color: Colors.white.withOpacity(0.7)
             ),
-          ) : Container()
-        ],
+            SizedBox(height: 5),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: 5),
+                Column(
+                  children: _followingStatus.isEmpty && _loading == false
+                      ? [
+                          // SizedBox(height: 5),
+                          Center(
+                            child: Text(
+                              'There is No New Post',
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
+                          )
+                        ]
+                      : showFollowingStatus(),
+                ),
+              ],
+            )
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.green[800],
@@ -85,114 +183,5 @@ class FeedPage1State extends State<FeedPage1> {
       ),
     );
   }
- 
-  Widget _listTile (ThreadPostData data) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
-      child: Card(
-        elevation: 5.0,
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget> [
-              Container(
-          child: TextField(
-            // controller: _searchController,
-            decoration: InputDecoration(
-            
-              contentPadding: EdgeInsets.symmetric(vertical: 15),
-              hintText: 'Search ...',
-              hintStyle: TextStyle(color: Colors.grey),
-             border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide.none),
-              prefixIcon: Icon(Icons.search, color: Colors.black),
-              suffixIcon: IconButton(
-                icon: Icon(
-                  Icons.clear,
-                  color: Colors.grey
-                    [400
-
-                    ]
-                  
-                ),
-                onPressed: () {// clearSearch();
-                },
-              ),
-              filled: true,
-            ),
-            readOnly: true,
-          enableInteractiveSelection: false,
-          // focusNode: FocusNode(),
-            onTap:(){
-              Navigator.push(context,MaterialPageRoute(builder: (context) => BookingPage()));
-
-            },
-          ),
-        ),
-              Row(
-                children: <Widget> [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Icon(Icons.person_pin,size: 30)
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget> [
-                      Text(data.userName, style: TextStyle (fontSize: 18, fontWeight: FontWeight.bold)),
-                      Padding(
-                        padding: const EdgeInsets.all(2.0),
-                        //child: Text(readTimestamp(data.postTimeStamp), style: TextStyle (fontSize: 18),),
-                      ),
-                    ]
-                  )
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8.0, 10.4, 4.0, 10.0),
-                child: Text(data.postContent, style: TextStyle(fontSize: 16)),
-              ),
-              Divider( height: 2, color: Colors.black),
-               Padding(
-                padding: const EdgeInsets.only(top: 6.0, bottom: 2.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children:<Widget> [
-                    Row(
-                      children: <Widget> [
-                        Icon(Icons.thumb_up_alt_rounded, size: 20),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Text('${data.postLikeCount}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                        )
-                      ],
-                    ),
-                    Row(
-                      children: <Widget> [
-                        Icon(Icons.mode_comment, size: 20),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Text('${data.postCommentCount}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                        )
-                      ],
-                    ),
-                    Row(
-                      children: <Widget> [
-                        Icon(Icons.share_rounded, size: 20),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                        )
-                      ],
-                    ),
-                  ],
-                )
-              )
-
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }
+

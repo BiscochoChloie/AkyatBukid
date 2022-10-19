@@ -1,158 +1,379 @@
-import 'package:flutter/material.dart';
-  
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:core';
+import 'package:akyatbukid/Models/EventModel.dart';
 import 'package:akyatbukid/Models/UserModel.dart';
-import 'package:akyatbukid/screens/profile.dart';
-import 'package:akyatbukid/Services/dataServices.dart';
-
-
+import 'package:akyatbukid/Models/BukidModel.dart';
+import 'package:akyatbukid/bookingdetails/mtdetails.dart';
+import 'package:akyatbukid/controller/bukid_controller.dart';
+import 'package:akyatbukid/controller/event_controller.dart';
+import 'package:akyatbukid/createdetails/createdetail.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:akyatbukid/controller/user_controller.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import "package:flutter/material.dart";
 
 class BookingPage extends StatefulWidget {
-  final String currentUserId;
+  static const String id = 'booking';
+  final UserModel userModel;
 
-  const BookingPage({Key key, this.currentUserId}) : super(key: key);
+  const BookingPage({Key? key, required this.userModel}) : super(key: key);
   @override
   _BookingPageState createState() => _BookingPageState();
 }
 
 class _BookingPageState extends State<BookingPage> {
-  Future<QuerySnapshot> _users;
-  TextEditingController _searchController = TextEditingController();
+  User? user = FirebaseAuth.instance.currentUser;
 
-  clearSearch() {
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => _searchController.clear());
-    setState(() {
-      _users = null;
-    });
-  }
-
-  buildUserTile(UserModel user) {
-    return ListTile(
-      leading: CircleAvatar(
-        radius: 20,
-        backgroundImage: user.profilePicture.isEmpty
-            ? AssetImage('assets/placeholder.png')
-            : NetworkImage(user.profilePicture),
-      ),
-      title: Text(user.fname +' ' + user.lname),
-      onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => ProfilePage (
-                  currentUserId: widget.currentUserId,
-                  visitedUserId: user.id,
-                )));
-      },
-    );
-  }
+  static final DateTime now = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        elevation: 0.5,
-        title: Container(
-          child: TextField(
-            controller: _searchController,
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.symmetric(vertical: 15),
-              hintText: 'Search ...',
-              hintStyle: TextStyle(color: Colors.white),
-              border: InputBorder.none,
-              prefixIcon: Icon(Icons.search, color: Colors.white),
-              suffixIcon: IconButton(
-                icon: Icon(
-                  Icons.clear,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  clearSearch();
-                },
-              ),
-              filled: true,
-            ),
-            autofocus: true,
-            onChanged: (input) {
-              if (input.isNotEmpty) {
-                setState(() {
-                  _users = DatabaseServices.searchUsers(input);
-                });
-              }
-            },
-          ),
-        ),
-      ),
-      body: Column(
-        children: [
-          Container(
-              child: TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.symmetric(vertical: 15),
-                  hintText: 'Search ...',
-                  hintStyle: TextStyle(color: Colors.white),
-                  border: InputBorder.none,
-                  prefixIcon: Icon(Icons.search, color: Colors.white),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      Icons.clear,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      clearSearch();
-                    },
-                  ),
-                  filled: true,
-                  
-                ),
-                autofocus: true,
-                onChanged: (input) {
-                  if (input.isNotEmpty) {
-                    setState(() {
-                      _users = DatabaseServices.searchUsers(input);
-                    });
-                  }
-                },
-              ),
-            ),
-     
-    
-        _users == null
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.search, size: 200),
-                  Text(
-                    'Search .uuu..',
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),
-                  )
-                ],
-              ),
-            )
-          : FutureBuilder(
-              future: _users,
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-                if (snapshot.data.docs.length == 0) {
-                  return Center(
-                    child: Text('No users found!'),
-                  );
-                }
-                return ListView.builder(
-                    itemCount: snapshot.data.docs.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      UserModel user =
-                          UserModel.fromDoc(snapshot.data.docs[index]);
-                      return buildUserTile(user);
-                    });
-              }),
-     ],
-      )  );
+    return StreamBuilder<DocumentSnapshot>(
+      stream: UserController().getUser(id: user!.uid),
+      builder: (context, snapshot) {
+        try {
+          if (!snapshot.data!.exists) return Text("Loading");
+          if (snapshot.connectionState == ConnectionState.waiting)
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+
+          //
+          UserModel userModel = UserModel.fromDoc(doc: snapshot.data!);
+          return Container(
+            height: 530,
+            child: userModel.usertype == 'H I K E R'
+                ? StreamBuilder<QuerySnapshot>(
+                    stream: EventController().getEvents(),
+                    builder: (context, snapshot) {
+                      try {
+                        if (!snapshot.hasData) return Text(" ");
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        return ListView.builder(
+                            itemCount: snapshot.data!.docs.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              EventModel eventModel = EventModel.fromDoc(
+                                  doc: snapshot.data!.docs[index]);
+                              EventModel.fromDoc(
+                                  doc: snapshot.data!.docs[index]);
+                              // children: snapshot.data!.docs.map((data) {
+                              //   BukidModel bukidModel = BukidModel.fromDoc(doc: data);
+
+                              return Card(
+                                elevation: 3.0,
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                               
+                                    Container(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 10,
+                                            right: 10,
+                                            top: 5,
+                                            bottom: 0),
+                                        child: FittedBox(
+                                          child: Material(
+                                            color: Colors.white,
+                                            child: now.isAfter(eventModel.end)
+                                                ? Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: <Widget>[
+                                                      Column(
+                                                        children: [
+                                                          Center(
+                                                            child: Stack(
+                                                              children: <
+                                                                  Widget>[
+                                                                Container(
+                                                                  width: 150.0,
+                                                                  child:
+                                                                      ClipRRect(
+                                                                    child: Image.network(
+                                                                        eventModel
+                                                                            .imageURL,
+                                                                        fit: BoxFit
+                                                                            .contain,
+                                                                        color: Colors.grey[
+                                                                            500],
+                                                                        colorBlendMode:
+                                                                            BlendMode.modulate),
+                                                                  ),
+                                                                ),
+                                                                Positioned(
+                                                                  top: 20,
+                                                                  right: 0,
+                                                                  child:
+                                                                      Container(
+                                                                    width:
+                                                                        150.0,
+                                                                    color: Colors
+                                                                        .black54,
+                                                                    padding:
+                                                                        EdgeInsets.all(
+                                                                            10),
+                                                                    child: Text(
+                                                                      'Event Ended',
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .center,
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              10,
+                                                                          color: Colors
+                                                                              .white,
+                                                                          fontWeight:
+                                                                              FontWeight.bold),
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Container(
+                                                          alignment: Alignment
+                                                              .centerRight,
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      3.0,
+                                                                  vertical:
+                                                                      3.0),
+                                                          // ignore: deprecated_member_use
+                                                          child: FlatButton(
+                                                            height: 25.0,
+                                                            color: Colors
+                                                                .green[800],
+                                                            onPressed: null,
+                                                            disabledColor:
+                                                                Colors.black12,
+                                                            disabledTextColor:
+                                                                Colors.blueGrey,
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            5.0)),
+                                                            child: Text(
+                                                                'Join Event',
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                        13)),
+                                                          ))
+                                                    ],
+                                                  )
+                                                : Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: <Widget>[
+                                                      Column(
+                                                        children: [
+                                                          Container(
+                                                            width: 150.0,
+                                                            child: ClipRRect(
+                                                              child:
+                                                                  Image.network(
+                                                                eventModel
+                                                                    .imageURL,
+                                                                fit: BoxFit
+                                                                    .contain,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Container(
+                                                          alignment: Alignment
+                                                              .centerRight,
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      3.0,
+                                                                  vertical:
+                                                                      3.0),
+                                                          // ignore: deprecated_member_use
+                                                          child: FlatButton(
+                                                            height: 25.0,
+                                                            color: Colors
+                                                                .green[800],
+                                                            onPressed: () {
+                                                              Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                    builder: (context) =>
+                                                                        MtDetails(
+                                                                            eventModel,
+                                                                            userModel)),
+                                                              );
+                                                            },
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            5.0)),
+                                                            child: Text(
+                                                                'Join Event',
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                        13)),
+                                                          ))
+                                                    ],
+                                                  ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                         Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 10,
+                                          right: 10,
+                                          top: 10,
+                                          bottom: 10),
+                                      child: Row(
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 20,
+                                            backgroundImage: eventModel
+                                                    .profilePicture.isEmpty
+                                                ? AssetImage(
+                                                    'assets/images/placeholder.png')
+                                                : NetworkImage(eventModel
+                                                        .profilePicture)
+                                                    as ImageProvider,
+                                          ),
+                                          SizedBox(width: 10),
+                                          Column(
+                                            children: [
+                                              Text(eventModel.authorname,
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight: FontWeight.bold)),
+                                                      Text('TOUR OPERATOR',
+              style: TextStyle(fontSize: 11)),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            });
+                      } catch (e) {
+                        return Text("Loading");
+                      }
+                    })
+                : StreamBuilder<QuerySnapshot>(
+                    stream: BukidController().getBukids(),
+                    builder: (context, snapshot) {
+                      try {
+                        if (!snapshot.hasData) return Text("Loading");
+
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        return ListView.builder(
+                            itemCount: snapshot.data!.docs.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              BukidModel bukidModel = BukidModel.fromDoc(
+                                  doc: snapshot.data!.docs[index]);
+                              BukidModel.fromDoc(
+                                  doc: snapshot.data!.docs[index]);
+                              // children: snapshot.data!.docs.map((data) {
+                              //   BukidModel bukidModel = BukidModel.fromDoc(doc: data);
+                              return Card(
+                                elevation: 3.0,
+                                child: Container(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(0),
+                                    child: FittedBox(
+                                      child: Material(
+                                        color: Colors.white,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Column(
+                                              children: [
+                                                Container(
+                                                  padding: EdgeInsets.fromLTRB(
+                                                      8, 10, 8, 8),
+                                                  width: 150.0,
+                                                  child: ClipRRect(
+                                                    child: Image.network(
+                                                      bukidModel.imageURL,
+                                                      fit: BoxFit.contain,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Container(
+                                                alignment:
+                                                    Alignment.centerRight,
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 3.0,
+                                                    vertical: 3.0),
+                                                // ignore: deprecated_member_use
+                                                child: FlatButton(
+                                                  height: 25.0,
+                                                  color: Colors.green[800],
+                                                  onPressed: () {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              CreateDetails(
+                                                                userModel:
+                                                                    userModel,
+                                                                bukidModel:
+                                                                    bukidModel,
+                                                              )),
+                                                    );
+                                                  },
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5.0)),
+                                                  child: Text(' Create Event ',
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 13)),
+                                                )),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            });
+                      } catch (e) {
+                        return Text("Loading");
+                      }
+                    }),
+          );
+        } catch (e) {
+          return Text("Loading");
+        }
+      },
+    );
   }
 }

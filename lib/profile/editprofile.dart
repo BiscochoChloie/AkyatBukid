@@ -9,29 +9,30 @@ import 'package:image_picker/image_picker.dart';
 class EditProfile extends StatefulWidget {
   final UserModel user;
 
-  const EditProfile({Key key, this.user}) : super(key: key);
+  const EditProfile({Key? key, required this.user}) : super(key: key); 
   @override
   _EditProfileState createState() => _EditProfileState();
 }
 
 class _EditProfileState extends State<EditProfile> {
-  String _fname;
-  String _lname;
-  String _bio;
-  File _profileImage;
-  String _imagePickedType;
+  String? _fname;
+  String? _lname;
+  String? _bio;
+  File? _profileImage;
+  ImagePicker picker = ImagePicker();
+  String? _imagePickedType;
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
 
   displayProfilePage() {
     if (_profileImage == null) {
       if (widget.user.profilePicture.isEmpty) {
-        return AssetImage('assets/placeholder.png');
+        return AssetImage('assets/images/placeholder.png');
       } else {
         return NetworkImage(widget.user.profilePicture);
       }
     } else {
-      return FileImage(_profileImage);
+      return FileImage(_profileImage!);
     }
   }
 
@@ -65,14 +66,28 @@ class _EditProfileState extends State<EditProfile> {
         });
   }
 
+//  handleImageFromGallery() async {
+//     try {
+//       XFile? image = await picker.pickImage(source: ImageSource.gallery);
+//       if (image != null) {
+//         setState(() {
+//           _pickedImage = File(image.path);
+//         });
+//       }
+//       return _pickedImage;
+//     } catch (e) {
+//       print(e);
+//     }
+//   }
+
   handleImageFromGallery() async {
     try {
-      File imageFile = await ImagePicker.pickImage(
-          source: ImageSource.gallery, imageQuality: 80);
+      XFile? imageFile =
+          await picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
       if (imageFile != null) {
         if (_imagePickedType == 'profile') {
           setState(() {
-            _profileImage = imageFile;
+            _profileImage = File(imageFile.path);
           });
         }
       }
@@ -83,12 +98,12 @@ class _EditProfileState extends State<EditProfile> {
 
   handleImageFromCamera() async {
     try {
-      File imageFile = await ImagePicker.pickImage(
-          source: ImageSource.camera, imageQuality: 80);
+      XFile? imageFile =
+          await picker.pickImage(source: ImageSource.camera, imageQuality: 80);
       if (imageFile != null) {
         if (_imagePickedType == 'profile') {
           setState(() {
-            _profileImage = imageFile;
+            _profileImage = File(imageFile.path);
           });
         }
       }
@@ -98,8 +113,8 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   saveProfile() async {
-    _formKey.currentState.save();
-    if (_formKey.currentState.validate() && !_isLoading) {
+    _formKey.currentState!.save();
+    if (_formKey.currentState!.validate() && !_isLoading) {
       setState(() {
         _isLoading = true;
       });
@@ -109,7 +124,7 @@ class _EditProfileState extends State<EditProfile> {
         profilePictureUrl = widget.user.profilePicture;
       } else {
         profilePictureUrl = await StorageService.uploadProfilePicture(
-            widget.user.profilePicture, _profileImage);
+            widget.user.profilePicture, _profileImage!);
       }
       // if (_coverImage == null) {
       //   coverPictureUrl = widget.user.coverImage;
@@ -118,11 +133,13 @@ class _EditProfileState extends State<EditProfile> {
       //       widget.user.coverImage, _coverImage);
       // }
       UserModel user = UserModel(
-        id: widget.user.id,
-        fname: _fname,
-        lname: _lname,
+        uid: widget.user.uid,
+        fname: _fname!,
+        lname: _lname!,
         profilePicture: profilePictureUrl,
-        bio: _bio,
+        bio: _bio!, address: '', birthday: '', contact: '', email: '',
+        operatorId: '',
+        usertype: '',
         // coverImage: coverPictureUrl,
       );
 
@@ -146,7 +163,7 @@ class _EditProfileState extends State<EditProfile> {
           backgroundColor: Colors.white,
           iconTheme: IconThemeData(color: Colors.black),
           title: Image(
-            image: AssetImage('assets/images/logo.png'),
+            image: AssetImage('assets/images/Logo2.png'),
             width: 100.0,
             height: 100.0,
           ),
@@ -220,11 +237,11 @@ class _EditProfileState extends State<EditProfile> {
                               fillColor: Color(0xFFe7edeb),
                               hintText: "First Name",
                             ),
-                            validator: (input) => input.trim().length < 2
+                            validator: (input) => input!.trim().length < 2
                                 ? 'please enter valid name'
                                 : null,
                             onSaved: (value) {
-                              _fname = value;
+                              _fname = value!;
                             },
                           ),
                           SizedBox(height: 20),
@@ -249,7 +266,7 @@ class _EditProfileState extends State<EditProfile> {
                               hintText: "Last Name",
                             ),
                             onSaved: (value) {
-                              _lname = value;
+                              _lname = value!;
                             },
                           ),
                           SizedBox(height: 20),
@@ -274,7 +291,7 @@ class _EditProfileState extends State<EditProfile> {
                               hintText: "Bio",
                             ),
                             onSaved: (value) {
-                              _bio = value;
+                              _bio = value!;
                             },
                           ),
                         ]))),
