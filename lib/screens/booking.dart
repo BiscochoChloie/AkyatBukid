@@ -69,7 +69,6 @@ class _BookingPageState extends State<BookingPage> {
                                   crossAxisAlignment:
                                       CrossAxisAlignment.stretch,
                                   children: [
-                               
                                     Container(
                                       child: Padding(
                                         padding: const EdgeInsets.only(
@@ -149,7 +148,7 @@ class _BookingPageState extends State<BookingPage> {
                                                                   vertical:
                                                                       3.0),
                                                           // ignore: deprecated_member_use
-                                                          child: FlatButton(
+                                                          child: MaterialButton(
                                                             height: 25.0,
                                                             color: Colors
                                                                 .green[800],
@@ -204,7 +203,7 @@ class _BookingPageState extends State<BookingPage> {
                                                                   vertical:
                                                                       3.0),
                                                           // ignore: deprecated_member_use
-                                                          child: FlatButton(
+                                                          child: MaterialButton(
                                                             height: 25.0,
                                                             color: Colors
                                                                 .green[800],
@@ -237,7 +236,7 @@ class _BookingPageState extends State<BookingPage> {
                                         ),
                                       ),
                                     ),
-                                         Padding(
+                                    Padding(
                                       padding: const EdgeInsets.only(
                                           left: 10,
                                           right: 10,
@@ -261,9 +260,11 @@ class _BookingPageState extends State<BookingPage> {
                                               Text(eventModel.authorname,
                                                   style: TextStyle(
                                                       fontSize: 15,
-                                                      fontWeight: FontWeight.bold)),
-                                                      Text('TOUR OPERATOR',
-              style: TextStyle(fontSize: 11)),
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                              Text('TOUR OPERATOR',
+                                                  style:
+                                                      TextStyle(fontSize: 11)),
                                             ],
                                           ),
                                         ],
@@ -332,7 +333,7 @@ class _BookingPageState extends State<BookingPage> {
                                                     horizontal: 3.0,
                                                     vertical: 3.0),
                                                 // ignore: deprecated_member_use
-                                                child: FlatButton(
+                                                child: MaterialButton(
                                                   height: 25.0,
                                                   color: Colors.green[800],
                                                   onPressed: () {

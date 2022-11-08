@@ -354,7 +354,7 @@ class _MtDetailsState extends State<MtDetails> {
                       ),
                       Divider(),
                       _remainingSlot == 0
-                          ? FlatButton(
+                          ? MaterialButton(
                               height: 30.0,
                               color: Colors.green[800],
                               onPressed: null,
@@ -366,7 +366,7 @@ class _MtDetailsState extends State<MtDetails> {
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 15)),
                             )
-                          : FlatButton(
+                          : MaterialButton(
                               height: 30.0,
                               color: Colors.green[800],
                               onPressed: () {

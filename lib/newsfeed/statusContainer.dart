@@ -147,7 +147,7 @@ class _StatusContainerState extends State<StatusContainer> {
                               if (selectedItem == 'delete') {
                                 AwesomeDialog(
                                   context: context,
-                                  dialogType: DialogType.QUESTION,
+                                  // dialogType: DialogType.QUESTION,
                                   buttonsBorderRadius:
                                       BorderRadius.all(Radius.circular(2)),
                                   headerAnimationLoop: false,

@@ -12,7 +12,6 @@ import "package:flutter/material.dart";
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 
-
 class CreateDetails extends StatefulWidget {
   final BukidModel bukidModel;
   final UserModel userModel;
@@ -114,7 +113,7 @@ class CreateDetailsState extends State<CreateDetails> {
                     alignment: Alignment.centerLeft,
                     padding: EdgeInsets.fromLTRB(0, 0, 170, 0),
                     // ignore: deprecated_member_use
-                    child: FlatButton(
+                    child: MaterialButton(
                       color: Colors.green[800],
                       onPressed: () {},
                       child: Text(' CREATE EVENT ',
@@ -356,7 +355,7 @@ class CreateDetailsState extends State<CreateDetails> {
                       if (_formKey.currentState!.validate()) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Event Created')),
-                        ); 
+                        );
                         setState(() {
                           _isLoading = true;
                         });
@@ -383,7 +382,7 @@ class CreateDetailsState extends State<CreateDetails> {
                         Navigator.pop(context);
                       }
                     },
-                    child: Text('Post'),
+                    child: const Text('Post'),
                     style: ElevatedButton.styleFrom(
                         primary: Colors.green[800],
                         onPrimary: Colors.white,

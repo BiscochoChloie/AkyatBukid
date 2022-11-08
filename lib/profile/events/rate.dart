@@ -161,7 +161,7 @@ class _RateState extends State<Rate> {
                   padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 3.0),
                   // ignore: deprecated_member_use
 
-                  child: FlatButton(
+                  child: MaterialButton(
                     height: 30.0,
                     color: Colors.green[800],
                     onPressed: () {
@@ -196,14 +196,13 @@ class _RateState extends State<Rate> {
                             Separator.ratingInformationSeparator +
                             DateTime.now().millisecondsSinceEpoch.toString());
                         EventController().upSert(event: widget.eventModel);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('You have successfully rated this event!')));
-                        
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text(
+                                'You have successfully rated this event!')));
                       } else {
-                         //you are already rated
+                        //you are already rated
                         ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text('You have already rated')));
-                       
                       }
                     },
                     shape: RoundedRectangleBorder(

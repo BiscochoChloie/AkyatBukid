@@ -392,7 +392,7 @@ class GuestDetailsState extends State<GuestDetails> {
                   padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 3.0),
                   // ignore: deprecated_member_use
 
-                  child: FlatButton(
+                  child: MaterialButton(
                     height: 30.0,
                     color: Colors.green[800],
                     onPressed: () async {

@@ -148,7 +148,8 @@ class ReceiptState extends State<Receipt> {
                   Container(
                     margin: EdgeInsets.only(left: 30.0),
                     child: Container(
-                      child: Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             'Address   ',
@@ -166,7 +167,8 @@ class ReceiptState extends State<Receipt> {
                   Container(
                     margin: EdgeInsets.only(left: 30.0, top: 10.0),
                     child: Container(
-                      child: Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             'Zip Code   ',
@@ -184,7 +186,8 @@ class ReceiptState extends State<Receipt> {
                   Container(
                     margin: EdgeInsets.only(left: 30.0, top: 10.0),
                     child: Container(
-                      child: Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             'Birhtdate   ',
@@ -202,7 +205,8 @@ class ReceiptState extends State<Receipt> {
                   Container(
                     margin: EdgeInsets.only(left: 30.0, top: 10.0),
                     child: Container(
-                      child: Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             'Phone #   ',
@@ -220,7 +224,8 @@ class ReceiptState extends State<Receipt> {
                   Container(
                     margin: EdgeInsets.only(left: 30.0, top: 10.0),
                     child: Container(
-                      child: Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             'Email   ',
@@ -303,7 +308,7 @@ class ReceiptState extends State<Receipt> {
                     ),
                   ),
                   Container(
-                    child: FlatButton(
+                    child: MaterialButton(
                       height: 25.0,
                       color: Colors.green[800],
                       onPressed: () async {
@@ -330,7 +335,7 @@ class ReceiptState extends State<Receipt> {
                           'authorId': widget.outputAuthorId,
                           'fname': widget.outputfname,
                           'lname': widget.outputlname,
-                          'profilePicture':widget.outputProfilePicture,
+                          'profilePicture': widget.outputProfilePicture,
                           'address': widget.outputAdd,
                           'zipCode': widget.outputZipCode,
                           'birthday': widget.outputBirth,
