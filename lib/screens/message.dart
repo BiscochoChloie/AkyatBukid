@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:akyatbukid/Models/UserModel.dart';
 import 'package:akyatbukid/screens/profile.dart';
-import 'package:akyatbukid/Services/dataServices.dart';
+import 'package:akyatbukid/services/dataServices.dart';
 
 class MessagePage extends StatefulWidget {
   final UserModel userModel;
@@ -15,7 +15,7 @@ class MessagePage extends StatefulWidget {
 
 class MessagePageState extends State<MessagePage> {
   late Future<QuerySnapshot> _users;
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
 
   clearSearch() {
     _searchController.clear();
@@ -34,10 +34,10 @@ class MessagePageState extends State<MessagePage> {
       leading: CircleAvatar(
         radius: 20,
         backgroundImage: user.profilePicture.isEmpty
-            ? AssetImage('assets/images/placeholder.png')
+            ? const AssetImage('assets/images/placeholder.png')
             : NetworkImage(user.profilePicture) as ImageProvider,
       ),
-      title: Text(user.fname + ' ' + user.lname),
+      title: Text('${user.fname} ${user.lname}'),
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => Chat(
@@ -54,7 +54,7 @@ class MessagePageState extends State<MessagePage> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
         // centerTitle: true,
         elevation: 0.5,
         // but
@@ -63,13 +63,13 @@ class MessagePageState extends State<MessagePage> {
             TextField(
               controller: _searchController,
               decoration: InputDecoration(
-                contentPadding: EdgeInsets.symmetric(vertical: 15),
+                contentPadding: const EdgeInsets.symmetric(vertical: 15),
                 hintText: 'Search ...',
-                hintStyle: TextStyle(color: Colors.grey),
+                hintStyle: const TextStyle(color: Colors.grey),
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                     borderSide: BorderSide.none),
-                prefixIcon: Icon(Icons.search, color: Colors.black),
+                prefixIcon: const Icon(Icons.search, color: Colors.black),
                 suffixIcon: IconButton(
                   icon: Icon(
                     Icons.clear,
@@ -97,7 +97,7 @@ class MessagePageState extends State<MessagePage> {
           ? Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                children: const [
                   //chatlists
                   Icon(Icons.search, size: 200),
                   Text(
@@ -111,12 +111,12 @@ class MessagePageState extends State<MessagePage> {
               future: _users,
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (!snapshot.hasData) {
-                  return Center(
+                  return const Center(
                     child: CircularProgressIndicator(),
                   );
                 }
                 if (snapshot.data.docs.length == 0) {
-                  return Center(
+                  return const Center(
                     child: Text('No users found!'),
                   );
                 }
@@ -150,7 +150,7 @@ class ChatState extends State<Chat> {
         child: Column(
           children: <Widget>[
             Container(
-              margin: EdgeInsets.only(top: 27),
+              margin: const EdgeInsets.only(top: 27),
               color: Colors.green,
               height: 70.0,
               //child: Text(user.fname + ' ' + user.lname),

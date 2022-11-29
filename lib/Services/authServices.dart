@@ -40,13 +40,26 @@ class AuthService {
           'operatorId': operatorId
         });
       }
-Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => NavPage(userModel: UserModel(uid: signedInUser!.uid, email: email, fname: fname, lname: lname, address: address, contact: contact, birthday: birthday, usertype: usertype, profilePicture: '', bio: '', operatorId: operatorId) )),
-        );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => NavPage(
+                userModel: UserModel(
+                    uid: signedInUser!.uid,
+                    email: email,
+                    fname: fname,
+                    lname: lname,
+                    address: address,
+                    contact: contact,
+                    birthday: birthday,
+                    usertype: usertype,
+                    profilePicture: '',
+                    bio: '',
+                    operatorId: operatorId))),
+      );
       //  Navigator.pop(context);
     } on PlatformException catch (e) {
-      throw (e);
+      rethrow;
     } catch (e) {
       print(e.toString());
       ScaffoldMessenger.of(context).showSnackBar(

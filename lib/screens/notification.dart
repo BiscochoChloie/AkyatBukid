@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import '/Services/authServices.dart';
+import '../services/authServices.dart';
 
 class NotifScreen extends StatelessWidget {
   @override
@@ -11,7 +11,7 @@ class NotifScreen extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0.0,
-          title: Text('Notifications',
+          title: const Text('Notifications',
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 20.0,
@@ -19,7 +19,7 @@ class NotifScreen extends StatelessWidget {
               )),
           actions: [
             Padding(
-                padding: EdgeInsets.only(top: 25, right: 30),
+                padding: const EdgeInsets.only(top: 25, right: 30),
                 child: InkWell(
                   onTap: () {},
                   child: Text('Mark as read',
@@ -35,7 +35,7 @@ class NotifScreen extends StatelessWidget {
         ),
         body: Container(
           padding: const EdgeInsets.only(top: 48.0),
-          decoration: BoxDecoration(color: Color(0xffefeff1)),
+          decoration: const BoxDecoration(color: Color(0xffefeff1)),
         ));
   }
 }

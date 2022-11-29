@@ -1,5 +1,5 @@
 import 'package:akyatbukid/Models/UserModel.dart';
-import 'package:akyatbukid/Services/dataServices.dart';
+import 'package:akyatbukid/services/dataServices.dart';
 import 'package:akyatbukid/screens/profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -117,16 +117,17 @@ class _FollowersScreenState extends State<FollowersScreen> {
         radius: 25.0,
         backgroundColor: Colors.grey,
         backgroundImage: user.profilePicture.isEmpty
-            ? AssetImage('assets/images/placeholder.png')
+            ? const AssetImage('assets/images/placeholder.png')
             : NetworkImage(user.profilePicture) as ImageProvider,
       ),
       title: Row(
         children: [
           Text(user.fname),
-          // UserBadges(user: user, size: 15), 
+          // UserBadges(user: user, size: 15),
         ],
       ),
-      subtitle: Text(user.usertype,style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+      subtitle: Text(user.usertype,
+          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
       onTap: () => _goToUserProfile(context, user),
     );
   }
@@ -137,7 +138,7 @@ class _FollowersScreenState extends State<FollowersScreen> {
         radius: 25.0,
         backgroundColor: Colors.grey,
         backgroundImage: user.profilePicture.isEmpty
-            ? AssetImage('assets/images/placeholder.png')
+            ? const AssetImage('assets/images/placeholder.png')
             : NetworkImage(user.profilePicture) as ImageProvider,
       ),
       title: Row(
@@ -146,7 +147,8 @@ class _FollowersScreenState extends State<FollowersScreen> {
           // UserBadges(user: user, size: 15),
         ],
       ),
-      subtitle: Text(user.usertype,style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+      subtitle: Text(user.usertype,
+          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
       onTap: () => _goToUserProfile(context, user),
     );
   }
@@ -159,12 +161,12 @@ class _FollowersScreenState extends State<FollowersScreen> {
       child: Scaffold(
         appBar: AppBar(
             backgroundColor: Colors.white,
-            iconTheme: IconThemeData(color: Colors.black),
+            iconTheme: const IconThemeData(color: Colors.black),
             title: Row(
               children: [
                 Text(
-                  widget.user.fname + ' ' + widget.user.lname,
-                  style: TextStyle(color: Colors.black),
+                  '${widget.user.fname} ${widget.user.lname}',
+                  style: const TextStyle(color: Colors.black),
                 ),
                 // UserBadges(user: widget.user, size: 15),
               ],
@@ -223,7 +225,7 @@ class _FollowersScreenState extends State<FollowersScreen> {
                   ),
                 ],
               )
-            : Center(child: CircularProgressIndicator()),
+            : const Center(child: CircularProgressIndicator()),
       ),
     );
   }

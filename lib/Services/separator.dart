@@ -1,3 +1,3 @@
-class Separator{
-  static const String ratingInformationSeparator = "(221xb4)";
+class Separator {
+  static const String ratingInformationSeparator = '(221xb4)';
 }

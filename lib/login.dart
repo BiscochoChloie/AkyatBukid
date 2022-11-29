@@ -4,9 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:akyatbukid/signup.dart';
 import 'package:akyatbukid/navbar.dart';
-import 'package:flutter/services.dart';
-import 'Services/authServices.dart';
-import 'navbar.dart';
 
 class LoginPage extends StatefulWidget {
   static const String id = 'login';
@@ -19,7 +16,7 @@ class LoginPageState extends State<LoginPage> {
 
   final _formKey = GlobalKey<FormState>();
   final emailExp =
-      new RegExp(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)");
+      RegExp(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)");
   late bool _passwordVisible;
   var errorMessage;
 
@@ -28,22 +25,24 @@ class LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
+    super.initState();
     _passwordVisible = false;
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.black),
-        title: Image(
+        iconTheme: const IconThemeData(color: Colors.black),
+        title: const Image(
           image: AssetImage('assets/images/Logo2.png'),
           width: 100.0,
           height: 100.0,
         ),
         centerTitle: true,
       ),
-      backgroundColor: Color.fromRGBO(69, 95, 70, 1.0),
+      backgroundColor: const Color(0xFF455F46),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(15.0, 30.0, 15.0, 30.0),
@@ -60,7 +59,7 @@ class LoginPageState extends State<LoginPage> {
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none),
                       filled: true,
-                      fillColor: Color(0xFFe7edeb),
+                      fillColor: const Color(0xFFe7edeb),
                       hintText: "Email",
                       prefixIcon: Icon(
                         Icons.email,
@@ -71,7 +70,7 @@ class LoginPageState extends State<LoginPage> {
                       email = value;
                     },
                   ),
-                  SizedBox(height: 15.0),
+                  const SizedBox(height: 15.0),
                   TextFormField(
                     keyboardType: TextInputType.visiblePassword,
                     decoration: InputDecoration(
@@ -79,7 +78,7 @@ class LoginPageState extends State<LoginPage> {
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none),
                       filled: true,
-                      fillColor: Color(0xFFe7edeb),
+                      fillColor: const Color(0xFFe7edeb),
                       hintText: "Password",
                       prefixIcon: Icon(
                         Icons.lock,
@@ -106,7 +105,7 @@ class LoginPageState extends State<LoginPage> {
                       password = value;
                     },
                   ),
-                  SizedBox(height: 50.0),
+                  const SizedBox(height: 50.0),
                   ElevatedButton(
                     onPressed: () async {
                       try {
@@ -117,15 +116,13 @@ class LoginPageState extends State<LoginPage> {
                             .first
                             .then((value) {
                           UserModel userModel = UserModel.fromDoc(doc: value);
-                          print(userModel.fname + "asdasdasdsadd");
-                          if (newUser != null) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => NavPage(
-                                          userModel: userModel,
-                                        )));
-                          }
+                          print("${userModel.fname}asdasdasdsadd");
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => NavPage(
+                                        userModel: userModel,
+                                      )));
                         });
                         //TENKSS HUEHUE
                         // if (newUser != null) {
@@ -153,21 +150,21 @@ class LoginPageState extends State<LoginPage> {
                         );
                       }
                     },
-                    //   Navigator.push(context, MaterialPageRoute(builder: (context) => NavPage()));
-
-                    child: Text('LOGIN'),
                     style: ElevatedButton.styleFrom(
-                        primary: Colors.orange[400],
+                        backgroundColor: Colors.orange[400],
                         onPrimary: Colors.black,
                         padding: const EdgeInsets.fromLTRB(57, 10, 57, 10),
                         shape: const RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
-                        textStyle: TextStyle(
+                        textStyle: const TextStyle(
                           fontSize: 23,
                         )),
+                    //   Navigator.push(context, MaterialPageRoute(builder: (context) => NavPage()));
+
+                    child: Text('LOGIN'),
                   ),
-                  SizedBox(height: 60.0),
+                  const SizedBox(height: 60.0),
                   // InkWell(
                   //   onTap: () {},
                   //   child: Text('Forgot Password?',

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:akyatbukid/Models/EventModel.dart';
 import 'package:akyatbukid/Models/UserModel.dart';
 import 'package:akyatbukid/Models/BukidModel.dart';
-import 'package:akyatbukid/Services/dataServices.dart';
+import 'package:akyatbukid/services/dataServices.dart';
 import 'package:akyatbukid/controller/bukid_controller.dart';
 import 'package:akyatbukid/controller/user_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,7 +16,8 @@ class CreateDetails extends StatefulWidget {
   final BukidModel bukidModel;
   final UserModel userModel;
 
-  CreateDetails({Key? key, required this.bukidModel, required this.userModel})
+  const CreateDetails(
+      {Key? key, required this.bukidModel, required this.userModel})
       : super(key: key);
 
   @override
@@ -64,7 +65,7 @@ class CreateDetailsState extends State<CreateDetails> {
   void initState() {
     super.initState();
     getCurrentUser();
-    authorname = widget.userModel.fname + ' ' + widget.userModel.lname;
+    authorname = '${widget.userModel.fname} ${widget.userModel.lname}';
   }
 
   String? _price, _packages;
@@ -81,8 +82,8 @@ class CreateDetailsState extends State<CreateDetails> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.black),
-        title: Image(
+        iconTheme: const IconThemeData(color: Colors.black),
+        title: const Image(
           image: AssetImage('assets/images/Logo2.png'),
           width: 100.0,
           height: 100.0,
@@ -94,29 +95,29 @@ class CreateDetailsState extends State<CreateDetails> {
         color: Colors.white,
         child: ListView(
           scrollDirection: Axis.vertical,
-          padding: EdgeInsets.fromLTRB(10, 20, 10, 15),
+          padding: const EdgeInsets.fromLTRB(10, 20, 10, 15),
           // padding: const EdgeInsets.only(top: 20.0, bottom: 15.0),
           children: [
             Center(
               child: Text(widget.bukidModel.name,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   )),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Form(
               key: _formKey,
               child: Column(
                 children: [
                   Container(
                     alignment: Alignment.centerLeft,
-                    padding: EdgeInsets.fromLTRB(0, 0, 170, 0),
+                    padding: const EdgeInsets.fromLTRB(0, 0, 170, 0),
                     // ignore: deprecated_member_use
                     child: MaterialButton(
                       color: Colors.green[800],
                       onPressed: () {},
-                      child: Text(' CREATE EVENT ',
+                      child: const Text(' CREATE EVENT ',
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 15,
@@ -134,7 +135,7 @@ class CreateDetailsState extends State<CreateDetails> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(15)),
                       child: Column(children: <Widget>[
-                        Text(
+                        const Text(
                           'Start Date & Time',
                           style: TextStyle(
                             color: Color.fromRGBO(153, 153, 153, 1.0),
@@ -149,14 +150,14 @@ class CreateDetailsState extends State<CreateDetails> {
                             //   _start = currentValue as int?;
                             // },
                             format: formatter,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               border: InputBorder.none,
                             ),
                             onShowPicker: (context, currentValue) async {
                               final date = await showDatePicker(
                                   context: context,
                                   firstDate: DateTime.now()
-                                      .subtract(Duration(days: 0)),
+                                      .subtract(const Duration(days: 0)),
                                   initialDate: currentValue ?? DateTime.now(),
                                   lastDate: DateTime(2100));
                               if (date != null) {
@@ -185,7 +186,7 @@ class CreateDetailsState extends State<CreateDetails> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(15)),
                       child: Column(children: <Widget>[
-                        Text(
+                        const Text(
                           'End Date & Time',
                           style: TextStyle(
                             color: Color.fromRGBO(153, 153, 153, 1.0),
@@ -200,14 +201,14 @@ class CreateDetailsState extends State<CreateDetails> {
                             //   _end = currentValue! as int?;
                             // },
                             format: formatter,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               border: InputBorder.none,
                             ),
                             onShowPicker: (context, currentValue) async {
                               final date = await showDatePicker(
                                   context: context,
                                   firstDate: DateTime.now()
-                                      .subtract(Duration(days: 0)),
+                                      .subtract(const Duration(days: 0)),
                                   initialDate: currentValue ?? DateTime.now(),
                                   lastDate: DateTime(2100));
                               if (date != null) {
@@ -240,7 +241,7 @@ class CreateDetailsState extends State<CreateDetails> {
                                 borderRadius: BorderRadius.circular(15)),
                             child: Column(
                               children: [
-                                Text(
+                                const Text(
                                   'Price',
                                   style: TextStyle(
                                     color: Color.fromRGBO(153, 153, 153, 1.0),
@@ -255,7 +256,7 @@ class CreateDetailsState extends State<CreateDetails> {
                                     return null;
                                   },
                                   keyboardType: TextInputType.number,
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                     border: InputBorder.none,
                                   ),
                                   onChanged: (value) {
@@ -277,7 +278,7 @@ class CreateDetailsState extends State<CreateDetails> {
                                 borderRadius: BorderRadius.circular(15)),
                             child: Column(
                               children: [
-                                Text(
+                                const Text(
                                   'No. of Slots',
                                   style: TextStyle(
                                     color: Color.fromRGBO(153, 153, 153, 1.0),
@@ -292,7 +293,7 @@ class CreateDetailsState extends State<CreateDetails> {
                                     return null;
                                   },
                                   keyboardType: TextInputType.number,
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                     border: InputBorder.none,
                                   ),
                                   onChanged: (value) => setState(
@@ -321,7 +322,7 @@ class CreateDetailsState extends State<CreateDetails> {
                                     left: 10.0, right: 10.0),
                                 child: Column(
                                   children: [
-                                    Text(
+                                    const Text(
                                       'Packages',
                                       style: TextStyle(
                                         color:
@@ -335,7 +336,7 @@ class CreateDetailsState extends State<CreateDetails> {
                                         }
                                         return null;
                                       },
-                                      decoration: InputDecoration(
+                                      decoration: const InputDecoration(
                                           border: InputBorder.none,
                                           hintMaxLines: 4),
                                       onChanged: (value) {
@@ -349,12 +350,12 @@ class CreateDetailsState extends State<CreateDetails> {
                               ),
                             ])),
                   ),
-                  SizedBox(height: 25.0),
+                  const SizedBox(height: 25.0),
                   ElevatedButton(
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Event Created')),
+                          const SnackBar(content: Text('Event Created')),
                         );
                         setState(() {
                           _isLoading = true;
@@ -382,17 +383,17 @@ class CreateDetailsState extends State<CreateDetails> {
                         Navigator.pop(context);
                       }
                     },
-                    child: const Text('Post'),
                     style: ElevatedButton.styleFrom(
-                        primary: Colors.green[800],
+                        backgroundColor: Colors.green[800],
                         onPrimary: Colors.white,
                         padding: const EdgeInsets.fromLTRB(40, 8, 40, 8),
                         shape: const RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
-                        textStyle: TextStyle(
+                        textStyle: const TextStyle(
                           fontSize: 16,
                         )),
+                    child: const Text('Post'),
                   ),
                 ],
               ),

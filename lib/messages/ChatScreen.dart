@@ -9,7 +9,7 @@ import 'package:akyatbukid/messages/privatemessage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import '/Services/authServices.dart';
+import '../services/authServices.dart';
 
 class ChatScreen extends StatefulWidget {
   final UserModel userModel;
@@ -129,85 +129,95 @@ class _ChatScreenState extends State<ChatScreen> {
                                                         )));
                                           },
                                           child: Card(
-                                            elevation: 8,
+                                              elevation: 8,
                                               child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
                                                 child: Row(
-                                            mainAxisAlignment:
-                                                  MainAxisAlignment.spaceBetween,
-                                            children: [
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
                                                   children: [
-                                                    Opacity(
-                                                      opacity: 0.7,
-                                                      child: Row(
-                                                        children: [
-                                                          CircleAvatar(
-                                                            radius: 20,
-                                                            backgroundImage: user
-                                                                    .profilePicture
-                                                                    .isEmpty
-                                                                ? AssetImage(
-                                                                    'assets/images/placeholder.png')
-                                                                : NetworkImage(user
-                                                                        .profilePicture)
-                                                                    as ImageProvider,
-                                                          ),
-                                                          SizedBox(width:8),
-                                                          Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Opacity(
+                                                          opacity: 0.7,
+                                                          child: Row(
                                                             children: [
-                                                              Text(
-                                                                user.fname +
-                                                                    " " +
-                                                                    user.lname,
-                                                                style: TextStyle(
-                                                                    fontSize: 14,
-                                                                     fontWeight: FontWeight.bold,
-                                                                    color: Colors
-                                                                        .black87),
+                                                              CircleAvatar(
+                                                                radius: 20,
+                                                                backgroundImage: user
+                                                                        .profilePicture
+                                                                        .isEmpty
+                                                                    ? AssetImage(
+                                                                        'assets/images/placeholder.png')
+                                                                    : NetworkImage(
+                                                                            user.profilePicture)
+                                                                        as ImageProvider,
                                                               ),
-                                                              Text(
-                                                                user.email,
-                                                                style: TextStyle(
-                                                                    fontSize: 8,
-                                                                    fontWeight: FontWeight.bold),
+                                                              SizedBox(
+                                                                  width: 8),
+                                                              Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Text(
+                                                                    user.fname +
+                                                                        " " +
+                                                                        user.lname,
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        color: Colors
+                                                                            .black87),
+                                                                  ),
+                                                                  Text(
+                                                                    user.email,
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            8,
+                                                                        fontWeight:
+                                                                            FontWeight.bold),
+                                                                  ),
+                                                                ],
                                                               ),
                                                             ],
                                                           ),
-                                                        ],
-                                                      ),
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            SizedBox(
+                                                              width: 50,
+                                                            ),
+                                                            SizedBox(
+                                                                width: 250,
+                                                                child: Text(
+                                                                  chat.message,
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          14,
+                                                                      color: Colors
+                                                                          .black87),
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                )),
+                                                          ],
+                                                        ),
+                                                      ],
                                                     ),
-                                                 
-                                                      Row(
-                                                        children: [
-                                                          SizedBox(width: 50,),
-                                                          SizedBox(
-                                                              width: 250,
-                                                              child: Text(
-                                                                chat.message,
-                                                                style: TextStyle(
-                                                                    fontSize: 14,
-                                                                    color:
-                                                                        Colors.black87),
-                                                                overflow: TextOverflow
-                                                                    .ellipsis,
-                                                              )),
-                                                        ],
-                                                      ),
-                                                    
-                                                   
+                                                    Text(unRead > 0
+                                                        ? unRead.toString()
+                                                        : "")
                                                   ],
                                                 ),
-                                                Text(unRead > 0
-                                                    ? unRead.toString()
-                                                    : "")
-                                            ],
-                                          ),
                                               )));
                                     });
                               },

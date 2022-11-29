@@ -91,7 +91,7 @@ class _BookingPageState extends State<BookingPage> {
                                                             child: Stack(
                                                               children: <
                                                                   Widget>[
-                                                                Container(
+                                                                SizedBox(
                                                                   width: 150.0,
                                                                   child:
                                                                       ClipRRect(

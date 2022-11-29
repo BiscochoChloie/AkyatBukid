@@ -1,6 +1,6 @@
 import 'package:akyatbukid/Models/EventModel.dart';
 import 'package:akyatbukid/Models/rating_information.dart';
-import 'package:akyatbukid/Services/separator.dart';
+import 'package:akyatbukid/services/separator.dart';
 import 'package:akyatbukid/controller/event_controller.dart';
 import 'package:akyatbukid/profile/events/review.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +17,7 @@ class Rate extends StatefulWidget {
 }
 
 class _RateState extends State<Rate> {
-  GlobalKey<FormState> _formKey = GlobalKey();
+  final GlobalKey<FormState> _formKey = GlobalKey();
   double? _rating;
   String _Text = "";
   @override
@@ -27,14 +27,15 @@ class _RateState extends State<Rate> {
     _Text = '';
   }
 
+  @override
   Widget build(BuildContext context) {
     FocusNode writingTextFocus = FocusNode();
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.black),
-        title: Image(
+        iconTheme: const IconThemeData(color: Colors.black),
+        title: const Image(
           image: AssetImage('assets/images/Logo2.png'),
           width: 100.0,
           height: 100.0,
@@ -47,7 +48,7 @@ class _RateState extends State<Rate> {
             children: [
               Container(
                 padding: const EdgeInsets.only(top: 20.0),
-                child: Text('RATE EVENT',
+                child: const Text('RATE EVENT',
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       fontSize: 20,
@@ -59,7 +60,7 @@ class _RateState extends State<Rate> {
                 padding: const EdgeInsets.fromLTRB(0.0, 25.0, 0.0, 0.0),
                 child: Text(widget.eventModel.name,
                     textAlign: TextAlign.left,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     )),
@@ -71,11 +72,11 @@ class _RateState extends State<Rate> {
                     Container(
                       child: CircleAvatar(
                         radius: 20,
-                        backgroundImage:
-                            widget.eventModel.profilePicture.isEmpty
-                                ? AssetImage('assets/images/placeholder.png')
-                                : NetworkImage(widget.eventModel.profilePicture)
-                                    as ImageProvider,
+                        backgroundImage: widget
+                                .eventModel.profilePicture.isEmpty
+                            ? const AssetImage('assets/images/placeholder.png')
+                            : NetworkImage(widget.eventModel.profilePicture)
+                                as ImageProvider,
                       ),
                     ),
                     Padding(
@@ -84,11 +85,11 @@ class _RateState extends State<Rate> {
                         children: [
                           Text(widget.eventModel.authorname,
                               textAlign: TextAlign.left,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
                               )),
-                          Text('event host',
+                          const Text('event host',
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontSize: 12,
@@ -101,7 +102,7 @@ class _RateState extends State<Rate> {
               ),
               Container(
                 padding: const EdgeInsets.only(top: 20.0),
-                child: Text('Please Rate Your Experience',
+                child: const Text('Please Rate Your Experience',
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       fontSize: 16,
@@ -115,8 +116,8 @@ class _RateState extends State<Rate> {
                     minRating: 1,
                     direction: Axis.horizontal,
                     itemCount: 5,
-                    itemPadding: EdgeInsets.symmetric(horizontal: 2.0),
-                    itemBuilder: (context, _) => Icon(
+                    itemPadding: const EdgeInsets.symmetric(horizontal: 2.0),
+                    itemBuilder: (context, _) => const Icon(
                           Icons.star,
                           color: Colors.amber,
                         ),
@@ -141,7 +142,7 @@ class _RateState extends State<Rate> {
                             child: TextFormField(
                               autofocus: true,
                               focusNode: writingTextFocus,
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                   border: InputBorder.none,
                                   hintText: 'Share your experience!',
                                   hintMaxLines: 4),
@@ -158,7 +159,8 @@ class _RateState extends State<Rate> {
                 padding: const EdgeInsets.fromLTRB(0, 50, 0, 3),
                 child: Container(
                   alignment: Alignment.center,
-                  padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 3.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 3.0, vertical: 3.0),
                   // ignore: deprecated_member_use
 
                   child: MaterialButton(
@@ -166,9 +168,9 @@ class _RateState extends State<Rate> {
                     color: Colors.green[800],
                     onPressed: () {
                       bool alreadyRated = false;
-                      var uuid = Uuid();
+                      var uuid = const Uuid();
 
-                      widget.eventModel.ratingInformation.forEach((element) {
+                      for (var element in widget.eventModel.ratingInformation) {
                         List<String> data = element
                             .toString()
                             .split(Separator.ratingInformationSeparator);
@@ -183,7 +185,7 @@ class _RateState extends State<Rate> {
                             FirebaseAuth.instance.currentUser!.uid) {
                           alreadyRated = true;
                         }
-                      });
+                      }
                       if (!alreadyRated) {
                         widget.eventModel.ratingInformation.add(_rating
                                 .toString() +
@@ -196,18 +198,20 @@ class _RateState extends State<Rate> {
                             Separator.ratingInformationSeparator +
                             DateTime.now().millisecondsSinceEpoch.toString());
                         EventController().upSert(event: widget.eventModel);
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(
-                                'You have successfully rated this event!')));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text(
+                                    'You have successfully rated this event!')));
                       } else {
                         //you are already rated
                         ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('You have already rated')));
+                            const SnackBar(
+                                content: Text('You have already rated')));
                       }
                     },
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5.0)),
-                    child: Text(' Submit Rate ',
+                    child: const Text(' Submit Rate ',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 15,
