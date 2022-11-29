@@ -1,4 +1,5 @@
 import 'package:akyatbukid/constant/labels.dart';
+import 'package:akyatbukid/widgets/authtextformfield_widget.dart';
 import 'package:akyatbukid/widgets/text_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -148,23 +149,8 @@ class SignupPageState extends State<SignupPage> {
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white),
                               ),
-                              TextFormField(
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return 'Email is Required';
-                                  } else if (emailExp.hasMatch(value) ==
-                                      false) {
-                                    return 'Invalid Email';
-                                  }
-
-                                  return null;
-                                },
-                                keyboardType: TextInputType.emailAddress,
-                                decoration: txtDecoration('Email Address'),
-                                onChanged: (value) {
-                                  _email = value;
-                                },
-                              ),
+                              const AuthTextFormFieldWidget(
+                                  label: 'Email Address'),
                               const SizedBox(height: 8.0),
                               TextFormField(
                                 validator: (value) {
@@ -338,11 +324,9 @@ class SignupPageState extends State<SignupPage> {
                               Container(
                                 alignment: Alignment.topLeft,
                                 padding: const EdgeInsets.fromLTRB(5, 0, 0, 3),
-                                child: const Text(
-                                  'What are you? ',
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.white),
-                                ),
+                                child: const TextWidget(
+                                    text: 'What are you? ',
+                                    color: Colors.white),
                               ),
                               Container(
                                 alignment: Alignment.topLeft,
@@ -358,10 +342,8 @@ class SignupPageState extends State<SignupPage> {
                                         });
                                       },
                                     ),
-                                    const Text(
-                                      'Hiker',
-                                      style: TextStyle(color: Colors.white),
-                                    )
+                                    const TextWidget(
+                                        text: 'Hiker', color: Colors.white)
                                   ]),
                                   const SizedBox(width: 15.0),
                                   Row(children: [
@@ -375,10 +357,9 @@ class SignupPageState extends State<SignupPage> {
                                         });
                                       },
                                     ),
-                                    const Text(
-                                      'Tour Operator',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
+                                    const TextWidget(
+                                        text: 'Tour Operator',
+                                        color: Colors.white),
                                     // Text('$_usertype', style: TextStyle(fontSize: 23),)
                                   ]),
                                 ]),
@@ -448,11 +429,10 @@ class SignupPageState extends State<SignupPage> {
                                               .termsAndConditionDescription,
                                         ).show();
                                       },
-                                      child: const Text(
-                                        'By tapping "Signup" you agree to our \nTerms & Policies',
-                                        style: TextStyle(
-                                            fontSize: 14, color: Colors.white),
-                                      ),
+                                      child: const TextWidget(
+                                          text:
+                                              'By tapping "Signup" you agree to our \nTerms & Policies',
+                                          color: Colors.white),
                                     ),
                                   ),
                                 ],

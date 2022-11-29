@@ -20,7 +20,7 @@ class TextWidget extends StatelessWidget {
     this.onTap,
     this.overflow,
     this.color = Colors.black,
-    this.fontSize = 12,
+    this.fontSize = 13,
     required this.text,
     this.decoration,
   });

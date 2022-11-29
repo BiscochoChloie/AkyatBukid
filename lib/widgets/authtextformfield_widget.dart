@@ -1,11 +1,11 @@
-// import 'package:coamplifi/utils/constants/colors.dart';
- import 'package:flutter/material.dart';
-// // ignore: depend_on_referenced_packages
-// import 'package:google_fonts/google_fonts.dart';
+import 'package:akyatbukid/constant/colors.dart';
+import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages
+import 'package:google_fonts/google_fonts.dart';
 
-class TextFormFieldWidget extends StatelessWidget {
+class AuthTextFormFieldWidget extends StatelessWidget {
   final String label;
-  // final Color colorFill;
+  final Color colorFill;
   final double radius;
   final bool isObscure;
   final Widget? suffixIcon;
@@ -19,69 +19,71 @@ class TextFormFieldWidget extends StatelessWidget {
   final bool? enabled;
   final TextEditingController? emailController;
   final double borderRadius;
+  final TextInputType? keyboardType;
 
   final void Function(String)? onChanged;
 
-  const TextFormFieldWidget({
-    super.key,
-    required this.label,
-    this.emailController,
-    this.borderRadius = 5,
-    this.isEmail = false,
-    this.formKey,
-    this.onChanged,
-    this.enabled,
-    this.maxLines = 1,
-    this.hintText,
-    this.labelfontSize = 14.0,
-    this.radius = 10,
-    this.floatingLabelBehavior,
-    this.suffixIcon,
-    // this.colorFill = CustomColors.lightGrey,
-    this.isObscure = false,
-    this.textFieldController,
-  });
+  const AuthTextFormFieldWidget(
+      {super.key,
+      required this.label,
+      this.emailController,
+      this.borderRadius = 5,
+      this.isEmail = false,
+      this.formKey,
+      this.onChanged,
+      this.enabled,
+      this.maxLines = 1,
+      this.hintText,
+      this.labelfontSize = 14.0,
+      this.radius = 10,
+      this.floatingLabelBehavior,
+      this.suffixIcon,
+      this.colorFill = Colors.white,
+      this.isObscure = false,
+      this.textFieldController,
+      this.keyboardType});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-      child: Container(
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(borderRadius),
-                topRight: Radius.circular(borderRadius))),
-        width: 300,
-        child: TextFormField(
-          maxLines: maxLines,
-          obscureText: isObscure,
-          controller: textFieldController,
-          enabled: enabled,
-          onChanged: onChanged,
-          style: const TextStyle(color: Colors.black),
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return '$label is required';
-            }
+    // final emailExp =
+    //     RegExp(r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)');
+    return Container(
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(borderRadius),
+              topRight: Radius.circular(borderRadius))),
+      child: TextFormField(
+        keyboardType: TextInputType.text,
+        maxLines: maxLines,
+        obscureText: isObscure,
+        controller: textFieldController,
+        enabled: enabled,
+        onChanged: onChanged,
+        style: const TextStyle(color: Colors.black),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return '$label is required';
+          }
+          // else if (emailExp.hasMatch(value) == false) {
+          //   return 'Invalid Email';
+          // }
 
-            return null;
-          },
-          decoration: InputDecoration(
-            errorStyle: const TextStyle(color: Colors.red),
-            hintText: hintText,
-            // floatingLabelStyle:
-                // GoogleFonts.poppins(color: CustomColors.primary),
-            // hintStyle: const TextStyle(color: Colors.black),
-            suffixIcon: suffixIcon,
-            // fillColor: colorFill,
-            filled: true,
-            labelText: label,
-            floatingLabelBehavior: floatingLabelBehavior,
-            labelStyle: TextStyle(
-              // color: CustomColors.solidGrey,
-              fontSize: labelfontSize,
-            ),
+          return null;
+        },
+        decoration: InputDecoration(
+          errorStyle: const TextStyle(color: Colors.red),
+          hintText: hintText,
+          floatingLabelStyle: GoogleFonts.poppins(color: CustomColors.primary),
+          hintStyle: const TextStyle(color: Colors.black),
+          suffixIcon: suffixIcon,
+          fillColor: colorFill,
+          filled: true,
+          labelText: label,
+          floatingLabelBehavior: floatingLabelBehavior,
+          labelStyle: TextStyle(
+            color: Colors.grey,
+            fontSize: labelfontSize,
           ),
         ),
       ),
