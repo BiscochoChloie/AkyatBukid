@@ -31,22 +31,23 @@ class _BookingPageState extends State<BookingPage> {
       stream: UserController().getUser(id: user!.uid),
       builder: (context, snapshot) {
         try {
-          if (!snapshot.data!.exists) return Text("Loading");
-          if (snapshot.connectionState == ConnectionState.waiting)
+          if (!snapshot.data!.exists) return const Text("Loading");
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
             );
+          }
 
           //
           UserModel userModel = UserModel.fromDoc(doc: snapshot.data!);
-          return Container(
+          return SizedBox(
             height: 530,
             child: userModel.usertype == 'H I K E R'
                 ? StreamBuilder<QuerySnapshot>(
                     stream: EventController().getEvents(),
                     builder: (context, snapshot) {
                       try {
-                        if (!snapshot.hasData) return Text(" ");
+                        if (!snapshot.hasData) return const Text(" ");
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
                           return const Center(
@@ -69,7 +70,6 @@ class _BookingPageState extends State<BookingPage> {
                                   crossAxisAlignment:
                                       CrossAxisAlignment.stretch,
                                   children: [
-                               
                                     Container(
                                       child: Padding(
                                         padding: const EdgeInsets.only(
@@ -92,7 +92,7 @@ class _BookingPageState extends State<BookingPage> {
                                                             child: Stack(
                                                               children: <
                                                                   Widget>[
-                                                                Container(
+                                                                SizedBox(
                                                                   width: 150.0,
                                                                   child:
                                                                       ClipRRect(
@@ -117,9 +117,10 @@ class _BookingPageState extends State<BookingPage> {
                                                                     color: Colors
                                                                         .black54,
                                                                     padding:
-                                                                        EdgeInsets.all(
+                                                                        const EdgeInsets.all(
                                                                             10),
-                                                                    child: Text(
+                                                                    child:
+                                                                        const Text(
                                                                       'Event Ended',
                                                                       textAlign:
                                                                           TextAlign
@@ -142,14 +143,15 @@ class _BookingPageState extends State<BookingPage> {
                                                       Container(
                                                           alignment: Alignment
                                                               .centerRight,
-                                                          padding: EdgeInsets
-                                                              .symmetric(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
                                                                   horizontal:
                                                                       3.0,
                                                                   vertical:
                                                                       3.0),
                                                           // ignore: deprecated_member_use
-                                                          child: FlatButton(
+                                                          child: MaterialButton(
                                                             height: 25.0,
                                                             color: Colors
                                                                 .green[800],
@@ -163,7 +165,7 @@ class _BookingPageState extends State<BookingPage> {
                                                                     BorderRadius
                                                                         .circular(
                                                                             5.0)),
-                                                            child: Text(
+                                                            child: const Text(
                                                                 'Join Event',
                                                                 style: TextStyle(
                                                                     color: Colors
@@ -180,7 +182,7 @@ class _BookingPageState extends State<BookingPage> {
                                                     children: <Widget>[
                                                       Column(
                                                         children: [
-                                                          Container(
+                                                          SizedBox(
                                                             width: 150.0,
                                                             child: ClipRRect(
                                                               child:
@@ -197,14 +199,15 @@ class _BookingPageState extends State<BookingPage> {
                                                       Container(
                                                           alignment: Alignment
                                                               .centerRight,
-                                                          padding: EdgeInsets
-                                                              .symmetric(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
                                                                   horizontal:
                                                                       3.0,
                                                                   vertical:
                                                                       3.0),
                                                           // ignore: deprecated_member_use
-                                                          child: FlatButton(
+                                                          child: MaterialButton(
                                                             height: 25.0,
                                                             color: Colors
                                                                 .green[800],
@@ -223,7 +226,7 @@ class _BookingPageState extends State<BookingPage> {
                                                                     BorderRadius
                                                                         .circular(
                                                                             5.0)),
-                                                            child: Text(
+                                                            child: const Text(
                                                                 'Join Event',
                                                                 style: TextStyle(
                                                                     color: Colors
@@ -237,7 +240,7 @@ class _BookingPageState extends State<BookingPage> {
                                         ),
                                       ),
                                     ),
-                                         Padding(
+                                    Padding(
                                       padding: const EdgeInsets.only(
                                           left: 10,
                                           right: 10,
@@ -249,21 +252,23 @@ class _BookingPageState extends State<BookingPage> {
                                             radius: 20,
                                             backgroundImage: eventModel
                                                     .profilePicture.isEmpty
-                                                ? AssetImage(
+                                                ? const AssetImage(
                                                     'assets/images/placeholder.png')
                                                 : NetworkImage(eventModel
                                                         .profilePicture)
                                                     as ImageProvider,
                                           ),
-                                          SizedBox(width: 10),
+                                          const SizedBox(width: 10),
                                           Column(
                                             children: [
                                               Text(eventModel.authorname,
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                       fontSize: 15,
-                                                      fontWeight: FontWeight.bold)),
-                                                      Text('TOUR OPERATOR',
-              style: TextStyle(fontSize: 11)),
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                              const Text('TOUR OPERATOR',
+                                                  style:
+                                                      TextStyle(fontSize: 11)),
                                             ],
                                           ),
                                         ],
@@ -274,14 +279,14 @@ class _BookingPageState extends State<BookingPage> {
                               );
                             });
                       } catch (e) {
-                        return Text("Loading");
+                        return const Text("Loading");
                       }
                     })
                 : StreamBuilder<QuerySnapshot>(
                     stream: BukidController().getBukids(),
                     builder: (context, snapshot) {
                       try {
-                        if (!snapshot.hasData) return Text("Loading");
+                        if (!snapshot.hasData) return const Text("Loading");
 
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
@@ -313,8 +318,9 @@ class _BookingPageState extends State<BookingPage> {
                                             Column(
                                               children: [
                                                 Container(
-                                                  padding: EdgeInsets.fromLTRB(
-                                                      8, 10, 8, 8),
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(
+                                                          8, 10, 8, 8),
                                                   width: 150.0,
                                                   child: ClipRRect(
                                                     child: Image.network(
@@ -328,11 +334,12 @@ class _BookingPageState extends State<BookingPage> {
                                             Container(
                                                 alignment:
                                                     Alignment.centerRight,
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 3.0,
-                                                    vertical: 3.0),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 3.0,
+                                                        vertical: 3.0),
                                                 // ignore: deprecated_member_use
-                                                child: FlatButton(
+                                                child: MaterialButton(
                                                   height: 25.0,
                                                   color: Colors.green[800],
                                                   onPressed: () {
@@ -352,7 +359,8 @@ class _BookingPageState extends State<BookingPage> {
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               5.0)),
-                                                  child: Text(' Create Event ',
+                                                  child: const Text(
+                                                      ' Create Event ',
                                                       style: TextStyle(
                                                           color: Colors.white,
                                                           fontSize: 13)),
@@ -366,12 +374,12 @@ class _BookingPageState extends State<BookingPage> {
                               );
                             });
                       } catch (e) {
-                        return Text("Loading");
+                        return const Text("Loading");
                       }
                     }),
           );
         } catch (e) {
-          return Text("Loading");
+          return const Text("Loading");
         }
       },
     );

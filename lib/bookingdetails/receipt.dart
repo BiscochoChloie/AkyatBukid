@@ -2,7 +2,6 @@ import 'dart:math';
 import 'package:akyatbukid/Models/EventModel.dart';
 import 'package:akyatbukid/Models/UserModel.dart';
 import 'package:akyatbukid/bookingdetails/mtdetails.dart';
-import 'package:akyatbukid/screens/booking.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:flutter/material.dart";
 import 'package:intl/intl.dart';
@@ -25,7 +24,7 @@ class Receipt extends StatefulWidget {
   final EventModel eventModel;
   final UserModel user;
 
-  Receipt({
+  const Receipt({
     @required this.eventId,
     this.bukidname,
     this.eventprice,
@@ -69,18 +68,18 @@ class ReceiptState extends State<Receipt> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.black),
-        title: Image(
+        iconTheme: const IconThemeData(color: Colors.black),
+        title: const Image(
           image: AssetImage('assets/images/Logo2.png'),
           width: 100.0,
           height: 100.0,
         ),
         centerTitle: true,
       ),
-      body: Container(
+      body: SizedBox(
         height: 800,
         child: ListView(
-          padding: EdgeInsets.fromLTRB(0, 20, 0, 15),
+          padding: const EdgeInsets.fromLTRB(0, 20, 0, 15),
           scrollDirection: Axis.vertical,
           children: <Widget>[
             Form(
@@ -94,7 +93,7 @@ class ReceiptState extends State<Receipt> {
                       alignment: Alignment.center,
                       height: 25,
                       color: Colors.green[800],
-                      child: Text(
+                      child: const Text(
                         '   RECEIPT   ',
                         style: TextStyle(
                           color: Colors.white,
@@ -109,7 +108,7 @@ class ReceiptState extends State<Receipt> {
                     child: Container(
                       child: Text(
                         widget.bukidname, //RadioButtonResult
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 20,
                           letterSpacing: 3,
                           fontWeight: FontWeight.bold,
@@ -118,7 +117,7 @@ class ReceiptState extends State<Receipt> {
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                    margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                     child: Container(
                       child: Text(
                           "Departure: ${DateFormat('dd MMM, yyyy, h:mm a').format(widget.eventstart).toString()}"
@@ -126,18 +125,18 @@ class ReceiptState extends State<Receipt> {
                           ),
                     ),
                   ),
-                  Divider(
+                  const Divider(
                     height: 20,
                     thickness: 2,
                     indent: 20,
                     endIndent: 20,
                   ),
                   Container(
-                    margin: EdgeInsets.only(bottom: 20.0),
+                    margin: const EdgeInsets.only(bottom: 20.0),
                     child: Container(
                       child: Text(
                         widget.outputfname + '  ' + widget.outputlname,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 20,
                           letterSpacing: 3,
                           fontWeight: FontWeight.bold,
@@ -146,11 +145,12 @@ class ReceiptState extends State<Receipt> {
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(left: 30.0),
+                    margin: const EdgeInsets.only(left: 30.0),
                     child: Container(
-                      child: Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
+                          const Text(
                             'Address   ',
                           ),
                           Padding(
@@ -164,11 +164,12 @@ class ReceiptState extends State<Receipt> {
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(left: 30.0, top: 10.0),
+                    margin: const EdgeInsets.only(left: 30.0, top: 10.0),
                     child: Container(
-                      child: Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
+                          const Text(
                             'Zip Code   ',
                           ),
                           Padding(
@@ -182,11 +183,12 @@ class ReceiptState extends State<Receipt> {
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(left: 30.0, top: 10.0),
+                    margin: const EdgeInsets.only(left: 30.0, top: 10.0),
                     child: Container(
-                      child: Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
+                          const Text(
                             'Birhtdate   ',
                           ),
                           Padding(
@@ -200,11 +202,12 @@ class ReceiptState extends State<Receipt> {
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(left: 30.0, top: 10.0),
+                    margin: const EdgeInsets.only(left: 30.0, top: 10.0),
                     child: Container(
-                      child: Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
+                          const Text(
                             'Phone #   ',
                           ),
                           Padding(
@@ -218,11 +221,12 @@ class ReceiptState extends State<Receipt> {
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(left: 30.0, top: 10.0),
+                    margin: const EdgeInsets.only(left: 30.0, top: 10.0),
                     child: Container(
-                      child: Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
+                          const Text(
                             'Email   ',
                           ),
                           Padding(
@@ -235,15 +239,15 @@ class ReceiptState extends State<Receipt> {
                       ),
                     ),
                   ),
-                  Divider(
+                  const Divider(
                     height: 20,
                     thickness: 2,
                     indent: 20,
                     endIndent: 20,
                   ),
                   Container(
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 210),
+                    child: const Padding(
+                      padding: EdgeInsets.only(right: 210),
                       child: Text(
                         'PAYMENT SUMMARY',
                         style: TextStyle(
@@ -254,7 +258,7 @@ class ReceiptState extends State<Receipt> {
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                    margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                     child: Column(
                       children: <Widget>[
                         Padding(
@@ -263,7 +267,7 @@ class ReceiptState extends State<Receipt> {
                             child: Text(
                               'Total Payment: ₱ ' +
                                   widget.eventprice, //Database
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 20,
                                 color: Color.fromRGBO(500, 800, 800, 800),
                               ),
@@ -273,19 +277,19 @@ class ReceiptState extends State<Receipt> {
                       ],
                     ),
                   ),
-                  Divider(
+                  const Divider(
                     height: 20,
                     thickness: 2,
                     indent: 20,
                     endIndent: 20,
                   ),
                   Container(
-                    margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                    margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
                     child: Column(
                       children: [
                         Text(
                           'Confirmation No.:   ' + generateRandomString(12),
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
                           ),
@@ -294,7 +298,7 @@ class ReceiptState extends State<Receipt> {
                           padding: const EdgeInsets.only(top: 5),
                           child: Text(
                             formatted, //Database
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 15,
                             ),
                           ),
@@ -303,13 +307,13 @@ class ReceiptState extends State<Receipt> {
                     ),
                   ),
                   Container(
-                    child: FlatButton(
+                    child: MaterialButton(
                       height: 25.0,
                       color: Colors.green[800],
                       onPressed: () async {
                         print(widget.outputAuthorId);
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Successfully Booked!')),
+                          const SnackBar(content: Text('Successfully Booked!')),
                         );
                         //  final outputfname;
                         //   final outputlname;
@@ -330,7 +334,7 @@ class ReceiptState extends State<Receipt> {
                           'authorId': widget.outputAuthorId,
                           'fname': widget.outputfname,
                           'lname': widget.outputlname,
-                          'profilePicture':widget.outputProfilePicture,
+                          'profilePicture': widget.outputProfilePicture,
                           'address': widget.outputAdd,
                           'zipCode': widget.outputZipCode,
                           'birthday': widget.outputBirth,
@@ -349,7 +353,7 @@ class ReceiptState extends State<Receipt> {
                       },
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5.0)),
-                      child: Text(' CONFIRM ',
+                      child: const Text(' CONFIRM ',
                           style: TextStyle(color: Colors.white, fontSize: 13)),
                     ),
                   ),

@@ -114,7 +114,7 @@ class CreateDetailsState extends State<CreateDetails> {
                     alignment: Alignment.centerLeft,
                     padding: EdgeInsets.fromLTRB(0, 0, 170, 0),
                     // ignore: deprecated_member_use
-                    child: FlatButton(
+                    child: MaterialButton(
                       color: Colors.green[800],
                       onPressed: () {},
                       child: Text(' CREATE EVENT ',
