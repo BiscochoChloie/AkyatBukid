@@ -1,5 +1,5 @@
 import 'package:akyatbukid/Models/UserModel.dart';
-import 'package:akyatbukid/Services/dataServices.dart';
+import 'package:akyatbukid/services/dataServices.dart';
 import 'package:akyatbukid/login.dart';
 import 'package:akyatbukid/navbar.dart';
 import 'package:akyatbukid/signup.dart';
@@ -21,14 +21,11 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-
+  @override
   @mustCallSuper
-  void initState() {
-
-  }
+  void initState() {}
 
   Widget getScreenId() {
-
     if (FirebaseAuth.instance.currentUser != null) {
       return FutureBuilder<UserModel>(
           future: DatabaseServices.getUserWithId(
@@ -37,7 +34,7 @@ class MyAppState extends State<MyApp> {
             if (snapshot.hasData) {
               return NavPage(userModel: snapshot.data!);
             }
-            return Center();
+            return const Center();
           });
     } else {
       return MaterialApp(

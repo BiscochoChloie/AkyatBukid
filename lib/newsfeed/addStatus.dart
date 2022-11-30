@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:akyatbukid/Models/StatusModel.dart';
 import 'package:akyatbukid/Models/UserModel.dart';
-import 'package:akyatbukid/Services/dataServices.dart';
-import 'package:akyatbukid/Services/storageServices.dart';
+import 'package:akyatbukid/services/dataServices.dart';
+import 'package:akyatbukid/services/storageServices.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -62,9 +62,9 @@ class AddStatusState extends State<AddStatus> {
                 },
                 child: Container(
                     color: Colors.grey,
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: Row(
-                      children: <Widget>[
+                      children: const <Widget>[
                         Icon(Icons.add_photo_alternate_rounded, size: 28),
                         Text(
                           "Add Image",
@@ -81,7 +81,7 @@ class AddStatusState extends State<AddStatus> {
         ]);
   }
 
-  int _value = 1;
+  final int _value = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -89,22 +89,22 @@ class AddStatusState extends State<AddStatus> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
-          iconTheme: IconThemeData(color: Colors.black),
+          iconTheme: const IconThemeData(color: Colors.black),
         ),
         body: Stack(children: <Widget>[
           KeyboardActions(
             config: _buildConfig(context),
             child: Column(
               children: <Widget>[
-                Container(
+                SizedBox(
                   width: size.width,
                   child: Padding(
                     padding: const EdgeInsets.only(right: 14.0, left: 10.0),
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.all(15.0),
+                          const Padding(
+                            padding: EdgeInsets.all(15.0),
                           ),
 
                           Row(
@@ -112,7 +112,7 @@ class AddStatusState extends State<AddStatus> {
                             children: <Widget>[
                               Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Container(
+                                  child: SizedBox(
                                     width: 40,
                                     height: 40,
                                     child:
@@ -134,7 +134,7 @@ class AddStatusState extends State<AddStatus> {
                                           child: TextFormField(
                                             autofocus: true,
                                             focusNode: writingTextFocus,
-                                            decoration: InputDecoration(
+                                            decoration: const InputDecoration(
                                                 border: InputBorder.none,
                                                 hintText:
                                                     'Input your status here',
@@ -184,7 +184,7 @@ class AddStatusState extends State<AddStatus> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: <Widget>[
-                                            SizedBox(width: 20.0),
+                                            const SizedBox(width: 20.0),
                                             StreamBuilder<QuerySnapshot>(
                                               stream: FirebaseFirestore.instance
                                                   .collection('bukid')
@@ -192,8 +192,9 @@ class AddStatusState extends State<AddStatus> {
                                               builder: (BuildContext context,
                                                   AsyncSnapshot<QuerySnapshot>
                                                       snapshot) {
-                                                if (!snapshot.hasData)
+                                                if (!snapshot.hasData) {
                                                   return Container();
+                                                }
                                                 return DropdownButton(
                                                   underline: Container(),
                                                   isExpanded: false,
@@ -223,7 +224,7 @@ class AddStatusState extends State<AddStatus> {
                                                       },
                                                     );
                                                   },
-                                                  hint: Text(
+                                                  hint: const Text(
                                                     'Choose a mountain',
                                                     style: TextStyle(
                                                         color: Color.fromRGBO(
@@ -241,11 +242,11 @@ class AddStatusState extends State<AddStatus> {
                         ]),
                   ),
                 ),
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
                 Padding(
                   padding: const EdgeInsets.only(left: 10.0, right: 10.0),
                   child: _pickedImage == null
-                      ? SizedBox.shrink()
+                      ? const SizedBox.shrink()
                       : Container(
                           height: 300,
                           decoration: BoxDecoration(
@@ -256,7 +257,7 @@ class AddStatusState extends State<AddStatus> {
                               )),
                         ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () async {
                     setState(() {
@@ -289,19 +290,21 @@ class AddStatusState extends State<AddStatus> {
                       _isLoading = false;
                     });
                   },
-                  child: Text('Post'),
                   style: ElevatedButton.styleFrom(
-                      primary: Colors.green[800],
+                      backgroundColor: Colors.green[800],
                       onPrimary: Colors.white,
                       padding: const EdgeInsets.fromLTRB(40, 8, 40, 8),
                       shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10))),
-                      textStyle: TextStyle(
+                      textStyle: const TextStyle(
                         fontSize: 16,
                       )),
+                  child: Text('Post'),
                 ),
-                SizedBox(height: 20),
-                _isLoading ? CircularProgressIndicator() : SizedBox.shrink()
+                const SizedBox(height: 20),
+                _isLoading
+                    ? const CircularProgressIndicator()
+                    : const SizedBox.shrink()
               ],
             ),
           ),

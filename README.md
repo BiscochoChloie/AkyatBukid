@@ -1,6 +1,8 @@
-# akyatbukid
+# AKYAT BUKID: A Mobile Application for an Interactive Booking Assistance for Mountaineering Activities
 
-A new Flutter project.
+Akyat Bukid is a mobile application that improves the convenience of online booking at the same time building a community within that application that promotes interactivity for users.
+
+We aim to propose a solution that helps the accessibility and efficiency of online booking in hiking using a mobile application. It focuses on developing a Mobile Application that is an Interactive Booking Assistance for Mountaineering Activities for both tour operators and hikers in Mindanao, Philippines.
 
 ## Getting Started
 

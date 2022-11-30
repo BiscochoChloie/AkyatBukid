@@ -5,15 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import '/Services/authServices.dart';
+import '../../services/authServices.dart';
 import 'package:intl/intl.dart';
 
 class Review extends StatefulWidget {
   final List<RatingInformation> ratingInformation;
 
-
-  const Review({Key? key, required this.ratingInformation})
-      : super(key: key);
+  const Review({Key? key, required this.ratingInformation}) : super(key: key);
   @override
   ReviewState createState() => ReviewState();
 }
@@ -23,12 +21,11 @@ class ReviewState extends State<Review> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.black),
-        title: Image(
+        iconTheme: const IconThemeData(color: Colors.black),
+        title: const Image(
           image: AssetImage('assets/images/Logo2.png'),
           width: 100.0,
           height: 100.0,
@@ -41,7 +38,7 @@ class ReviewState extends State<Review> {
             children: [
               Container(
                 padding: const EdgeInsets.only(top: 20.0),
-                child: Text('REVIEWS',
+                child: const Text('REVIEWS',
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       fontSize: 20,
@@ -50,19 +47,16 @@ class ReviewState extends State<Review> {
                     )),
               ),
               Column(
-
-                children: widget.ratingInformation.map((rateInfo){
+                children: widget.ratingInformation.map((rateInfo) {
                   return Card(
                     child: Column(
-
                       children: [
                         Row(
-                          mainAxisAlignment:MainAxisAlignment.spaceBetween,
-
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
                               padding: const EdgeInsets.only(left: 20.0),
-                              child: ClipRRect(
+                              child: const ClipRRect(
                                 child: Image(
                                   image: AssetImage(
                                     'assets/images/placeholder.png',
@@ -73,52 +67,64 @@ class ReviewState extends State<Review> {
                               ),
                             ),
                             Container(
-                              padding:
-                              const EdgeInsets.fromLTRB(5.0, 20.0, 5.0, 20.0),
+                              padding: const EdgeInsets.fromLTRB(
+                                  5.0, 20.0, 5.0, 20.0),
                               child: Column(
-                                crossAxisAlignment:CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
-                                    mainAxisAlignment:MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       StreamBuilder<DocumentSnapshot>(
-                                        stream: UserController().getUser(id: rateInfo.userId),
-                                        builder: (context, snapshot) {
-                                          if(!snapshot.hasData)return Center();
-                                          UserModel userModel = UserModel.fromDoc(doc: snapshot.data!);
-                                          return Text(userModel.fname+" "+userModel.lname,
-                                              textAlign: TextAlign.left,
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold,
-                                              ));
-                                        }
+                                          stream: UserController()
+                                              .getUser(id: rateInfo.userId),
+                                          builder: (context, snapshot) {
+                                            if (!snapshot.hasData)
+                                              return const Center();
+                                            UserModel userModel =
+                                                UserModel.fromDoc(
+                                                    doc: snapshot.data!);
+                                            return Text(
+                                                "${userModel.fname} ${userModel.lname}",
+                                                textAlign: TextAlign.left,
+                                                style: const TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold,
+                                                ));
+                                          }),
+                                      const Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10),
                                       ),
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: 10),
-                                      ),
-                                      Text(DateFormat.yMMMMd('en_US').add_jm().format(DateTime.fromMillisecondsSinceEpoch(rateInfo.timestamp)),
+                                      Text(
+                                          DateFormat.yMMMMd('en_US')
+                                              .add_jm()
+                                              .format(DateTime
+                                                  .fromMillisecondsSinceEpoch(
+                                                      rateInfo.timestamp)),
                                           textAlign: TextAlign.right,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontSize: 12,
                                             fontWeight: FontWeight.bold,
                                           )),
                                     ],
                                   ),
                                   Container(
-                                    padding: const EdgeInsets.only(right: 220.0),
+                                    padding:
+                                        const EdgeInsets.only(right: 220.0),
                                     child: RatingBar.builder(
                                         initialRating: rateInfo.rating,
                                         minRating: 1,
                                         direction: Axis.horizontal,
                                         itemCount: 5,
                                         itemSize: 15,
-                                        itemPadding:
-                                        EdgeInsets.symmetric(horizontal: 2.0),
-                                        itemBuilder: (context, _) => Icon(
-                                          Icons.star,
-                                          color: Colors.amber,
-                                        ),
+                                        itemPadding: const EdgeInsets.symmetric(
+                                            horizontal: 2.0),
+                                        itemBuilder: (context, _) => const Icon(
+                                              Icons.star,
+                                              color: Colors.amber,
+                                            ),
                                         onRatingUpdate: (value) {}),
                                   ),
                                 ],

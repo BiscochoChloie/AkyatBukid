@@ -1,15 +1,15 @@
 import 'dart:io';
 
 import 'package:akyatbukid/Models/UserModel.dart';
-import 'package:akyatbukid/Services/dataServices.dart';
-import 'package:akyatbukid/Services/storageServices.dart';
+import 'package:akyatbukid/services/dataServices.dart';
+import 'package:akyatbukid/services/storageServices.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditProfile extends StatefulWidget {
   final UserModel user;
 
-  const EditProfile({Key? key, required this.user}) : super(key: key); 
+  const EditProfile({Key? key, required this.user}) : super(key: key);
   @override
   _EditProfileState createState() => _EditProfileState();
 }
@@ -27,7 +27,7 @@ class _EditProfileState extends State<EditProfile> {
   displayProfilePage() {
     if (_profileImage == null) {
       if (widget.user.profilePicture.isEmpty) {
-        return AssetImage('assets/images/placeholder.png');
+        return const AssetImage('assets/images/placeholder.png');
       } else {
         return NetworkImage(widget.user.profilePicture);
       }
@@ -41,20 +41,20 @@ class _EditProfileState extends State<EditProfile> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-              title: Text("From where do you want to take the photo? "),
+              title: const Text("From where do you want to take the photo? "),
               content: SingleChildScrollView(
                 child: ListBody(
                   children: <Widget>[
                     ListTile(
-                        leading: Icon(Icons.photo_library),
-                        title: Text('Gallery'),
+                        leading: const Icon(Icons.photo_library),
+                        title: const Text('Gallery'),
                         onTap: () {
                           handleImageFromGallery();
                           Navigator.of(context).pop();
                         }),
                     ListTile(
-                      leading: Icon(Icons.photo_camera),
-                      title: Text('Camera'),
+                      leading: const Icon(Icons.photo_camera),
+                      title: const Text('Camera'),
                       onTap: () {
                         handleImageFromCamera();
                         Navigator.of(context).pop();
@@ -161,8 +161,8 @@ class _EditProfileState extends State<EditProfile> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
-          iconTheme: IconThemeData(color: Colors.black),
-          title: Image(
+          iconTheme: const IconThemeData(color: Colors.black),
+          title: const Image(
             image: AssetImage('assets/images/Logo2.png'),
             width: 100.0,
             height: 100.0,
@@ -177,7 +177,7 @@ class _EditProfileState extends State<EditProfile> {
                   _showSelectionDialog(context);
                 },
                 child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 20),
+                    padding: const EdgeInsets.symmetric(vertical: 20),
                     child: Stack(
                       children: [
                         CircleAvatar(
@@ -188,7 +188,7 @@ class _EditProfileState extends State<EditProfile> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
+                            children: const [
                               Icon(
                                 Icons.camera_alt,
                                 size: 25,
@@ -216,11 +216,11 @@ class _EditProfileState extends State<EditProfile> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           Container(
                             alignment: Alignment.topLeft,
-                            padding: EdgeInsets.fromLTRB(5, 0, 0, 3),
-                            child: Text(
+                            padding: const EdgeInsets.fromLTRB(5, 0, 0, 3),
+                            child: const Text(
                               'First Name',
                               style:
                                   TextStyle(fontSize: 13, color: Colors.black),
@@ -234,7 +234,7 @@ class _EditProfileState extends State<EditProfile> {
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: BorderSide.none),
                               filled: true,
-                              fillColor: Color(0xFFe7edeb),
+                              fillColor: const Color(0xFFe7edeb),
                               hintText: "First Name",
                             ),
                             validator: (input) => input!.trim().length < 2
@@ -244,11 +244,11 @@ class _EditProfileState extends State<EditProfile> {
                               _fname = value!;
                             },
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           Container(
                             alignment: Alignment.topLeft,
-                            padding: EdgeInsets.fromLTRB(5, 0, 0, 3),
-                            child: Text(
+                            padding: const EdgeInsets.fromLTRB(5, 0, 0, 3),
+                            child: const Text(
                               'Last Name',
                               style:
                                   TextStyle(fontSize: 13, color: Colors.black),
@@ -262,18 +262,18 @@ class _EditProfileState extends State<EditProfile> {
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: BorderSide.none),
                               filled: true,
-                              fillColor: Color(0xFFe7edeb),
+                              fillColor: const Color(0xFFe7edeb),
                               hintText: "Last Name",
                             ),
                             onSaved: (value) {
                               _lname = value!;
                             },
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           Container(
                             alignment: Alignment.topLeft,
-                            padding: EdgeInsets.fromLTRB(5, 0, 0, 3),
-                            child: Text(
+                            padding: const EdgeInsets.fromLTRB(5, 0, 0, 3),
+                            child: const Text(
                               'Bio',
                               style:
                                   TextStyle(fontSize: 13, color: Colors.black),
@@ -287,7 +287,7 @@ class _EditProfileState extends State<EditProfile> {
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: BorderSide.none),
                               filled: true,
-                              fillColor: Color(0xFFe7edeb),
+                              fillColor: const Color(0xFFe7edeb),
                               hintText: "Bio",
                             ),
                             onSaved: (value) {
@@ -295,7 +295,7 @@ class _EditProfileState extends State<EditProfile> {
                             },
                           ),
                         ]))),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             GestureDetector(
               onTap: saveProfile,
               child: ElevatedButton(
@@ -303,24 +303,24 @@ class _EditProfileState extends State<EditProfile> {
                   saveProfile();
                   // Navigator.push(context, MaterialPageRoute(builder: (context) => NavPage()));
                 },
-                child: Text('Save'),
                 style: ElevatedButton.styleFrom(
-                    primary: Colors.green[800],
+                    backgroundColor: Colors.green[800],
                     onPrimary: Colors.white,
                     padding: const EdgeInsets.fromLTRB(40, 8, 40, 8),
                     shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10))),
-                    textStyle: TextStyle(
+                    textStyle: const TextStyle(
                       fontSize: 16,
                     )),
+                child: Text('Save'),
               ),
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             _isLoading
-                ? CircularProgressIndicator(
+                ? const CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation(Colors.black),
                   )
-                : SizedBox.shrink()
+                : const SizedBox.shrink()
           ])
         ]));
   }

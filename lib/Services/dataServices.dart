@@ -1,4 +1,3 @@
-import 'package:akyatbukid/Models/EventModel.dart';
 import 'package:akyatbukid/Models/notification_model.dart';
 import 'package:akyatbukid/Models/StatusModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,9 +5,6 @@ import 'package:akyatbukid/constant/constant.dart';
 // import 'package:twitter/Models/Activity.dart';
 // import 'package:twitter/Models/Tweet.dart';
 import 'package:akyatbukid/Models/UserModel.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
 
 class DatabaseServices {
   static Future<int> bookedNum(String eventId) async {
@@ -58,7 +54,7 @@ class DatabaseServices {
   ) async {
     Future<QuerySnapshot> users = usersRef
         .where('fname', isGreaterThanOrEqualTo: fname)
-        .where('fname', isLessThan: fname + 'z')
+        .where('fname', isLessThan: '${fname}z')
         // .where('lname', isGreaterThanOrEqualTo: lname)
         // .where('lname', isLessThan: lname + 'z')
         .get();
@@ -194,7 +190,7 @@ class DatabaseServices {
           "authorId": status.authorId,
           "timestamp": status.timestamp,
           "bukid": status.bukid,
-          'likes': status.likes,
+          'likes': doc.id,
           'comments': status.comments,
         });
       }

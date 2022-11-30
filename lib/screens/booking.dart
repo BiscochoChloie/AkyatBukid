@@ -266,7 +266,7 @@ class _BookingPageState extends State<BookingPage> {
                                                       fontSize: 15,
                                                       fontWeight:
                                                           FontWeight.bold)),
-                                              const Text('TOUR OPERATOR',
+                                              Text('TOUR OPERATOR',
                                                   style:
                                                       TextStyle(fontSize: 11)),
                                             ],

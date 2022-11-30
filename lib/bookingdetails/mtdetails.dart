@@ -1,6 +1,6 @@
 import 'package:akyatbukid/Models/EventModel.dart';
 import 'package:akyatbukid/Models/UserModel.dart';
-import 'package:akyatbukid/Services/dataServices.dart';
+import 'package:akyatbukid/services/dataServices.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:akyatbukid/bookingdetails/guestdetails.dart';
@@ -11,7 +11,7 @@ class MtDetails extends StatefulWidget {
   final EventModel eventModel;
   final UserModel user;
 
-  MtDetails(
+  const MtDetails(
     this.eventModel,
     this.user,
   );
@@ -53,12 +53,13 @@ class _MtDetailsState extends State<MtDetails> {
     remainingSlot();
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
-          iconTheme: IconThemeData(color: Colors.black),
-          title: Image(
+          iconTheme: const IconThemeData(color: Colors.black),
+          title: const Image(
             image: AssetImage('assets/images/Logo2.png'),
             width: 100.0,
             height: 100.0,
@@ -86,12 +87,12 @@ class _MtDetailsState extends State<MtDetails> {
                         ),
                       ),
                       Text(widget.eventModel.name,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           )),
-                      Divider(),
-                      Container(
+                      const Divider(),
+                      SizedBox(
                         height: 120.0,
                         width: 350.0,
                         child: Text(
@@ -99,14 +100,14 @@ class _MtDetailsState extends State<MtDetails> {
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      Divider(
+                      const Divider(
                         height: 10,
                         color: Colors.grey,
                       ),
                       Container(
                         padding: const EdgeInsets.all(3),
                         child: Text('No. Participants $_bookedCount',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
                             )),
@@ -129,7 +130,7 @@ class _MtDetailsState extends State<MtDetails> {
                                 radius: 20,
                                 backgroundImage: widget
                                         .user.profilePicture.isEmpty
-                                    ? AssetImage(
+                                    ? const AssetImage(
                                         'assets/images/placeholder.png')
                                     : NetworkImage(
                                             widget.eventModel.profilePicture)
@@ -143,11 +144,11 @@ class _MtDetailsState extends State<MtDetails> {
                                 children: [
                                   Text(widget.eventModel.authorname,
                                       textAlign: TextAlign.left,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
                                       )),
-                                  Text('event host',
+                                  const Text('event host',
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         fontSize: 12,
@@ -158,7 +159,7 @@ class _MtDetailsState extends State<MtDetails> {
                           ],
                         ),
                       ),
-                      Divider(
+                      const Divider(
                         height: 10,
                         color: Colors.grey,
                       ),
@@ -167,14 +168,14 @@ class _MtDetailsState extends State<MtDetails> {
                             const EdgeInsets.fromLTRB(10.0, 10.0, 150.0, 5.0),
                         child: Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.location_on_sharp,
                               color: Colors.green,
                               size: 30.0,
                             ),
                             Text(widget.eventModel.location,
                                 textAlign: TextAlign.left,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
                                 )),
@@ -188,14 +189,14 @@ class _MtDetailsState extends State<MtDetails> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.hiking_sharp,
                               color: Colors.green,
                               size: 30.0,
                             ),
                             Text(widget.eventModel.difficulty,
                                 textAlign: TextAlign.left,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
                                 )),
@@ -207,14 +208,14 @@ class _MtDetailsState extends State<MtDetails> {
                             const EdgeInsets.fromLTRB(10.0, 0.0, 280.0, 5.0),
                         child: Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.watch_later_sharp,
                               color: Colors.green,
                               size: 30.0,
                             ),
                             Text(widget.eventModel.hoursHike,
                                 textAlign: TextAlign.left,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
                                 )),
@@ -233,14 +234,14 @@ class _MtDetailsState extends State<MtDetails> {
                                   Container(
                                     child: Row(
                                       children: [
-                                        Icon(
+                                        const Icon(
                                           Icons.price_change_sharp,
                                           color: Colors.green,
                                           size: 30.0,
                                         ),
-                                        Text('₱ ' + widget.eventModel.price,
+                                        Text('₱ ${widget.eventModel.price}',
                                             textAlign: TextAlign.left,
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontSize: 12,
                                               fontWeight: FontWeight.bold,
                                             )),
@@ -252,15 +253,17 @@ class _MtDetailsState extends State<MtDetails> {
                                         100.0, 0.0, 0.0, 0.0),
                                     child: Row(
                                       children: [
-                                        Icon(
+                                        const Icon(
                                           Icons.calendar_today_sharp,
                                           color: Colors.green,
                                           size: 30.0,
                                         ),
                                         Text(
-                                            "${DateFormat('MMM dd, yyyy').format(widget.eventModel.start).toString()}",
+                                            DateFormat('MMM dd, yyyy')
+                                                .format(widget.eventModel.start)
+                                                .toString(),
                                             textAlign: TextAlign.left,
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontSize: 12,
                                               fontWeight: FontWeight.bold,
                                             )),
@@ -278,7 +281,7 @@ class _MtDetailsState extends State<MtDetails> {
                                   Container(
                                     child: Row(
                                       children: [
-                                        Icon(
+                                        const Icon(
                                           Icons.person_sharp,
                                           color: Colors.green,
                                           size: 30.0,
@@ -287,7 +290,7 @@ class _MtDetailsState extends State<MtDetails> {
                                             widget.eventModel.noOfSlot
                                                 .toString(),
                                             textAlign: TextAlign.left,
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontSize: 12,
                                               fontWeight: FontWeight.bold,
                                             )),
@@ -299,15 +302,17 @@ class _MtDetailsState extends State<MtDetails> {
                                         130.0, 0.0, 0.0, 0.0),
                                     child: Row(
                                       children: [
-                                        Icon(
+                                        const Icon(
                                           Icons.calendar_today_sharp,
                                           color: Colors.red,
                                           size: 30.0,
                                         ),
                                         Text(
-                                            "${DateFormat('MMM dd, yyyy').format(widget.eventModel.end).toString()}",
+                                            DateFormat('MMM dd, yyyy')
+                                                .format(widget.eventModel.end)
+                                                .toString(),
                                             textAlign: TextAlign.left,
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontSize: 12,
                                               fontWeight: FontWeight.bold,
                                             )),
@@ -324,7 +329,7 @@ class _MtDetailsState extends State<MtDetails> {
                         padding:
                             const EdgeInsets.fromLTRB(10.0, 0.0, 280.0, 5.0),
                         child: Row(
-                          children: [
+                          children: const [
                             Icon(
                               Icons.backpack_sharp,
                               color: Colors.green,
@@ -347,12 +352,12 @@ class _MtDetailsState extends State<MtDetails> {
                         color: Colors.green,
                         child: Text(widget.eventModel.packages,
                             textAlign: TextAlign.left,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
                             )),
                       ),
-                      Divider(),
+                      const Divider(),
                       _remainingSlot == 0
                           ? MaterialButton(
                               height: 30.0,
@@ -362,7 +367,7 @@ class _MtDetailsState extends State<MtDetails> {
                               disabledTextColor: Colors.blueGrey,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(5.0)),
-                              child: Text('Fully Booked!',
+                              child: const Text('Fully Booked!',
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 15)),
                             )
@@ -389,7 +394,7 @@ class _MtDetailsState extends State<MtDetails> {
                               },
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(5.0)),
-                              child: Text('Join Event',
+                              child: const Text('Join Event',
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 15)),
                             )

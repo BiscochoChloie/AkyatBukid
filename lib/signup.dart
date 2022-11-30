@@ -1,8 +1,10 @@
-import 'package:akyatbukid/navbar.dart';
+import 'package:akyatbukid/constant/labels.dart';
+import 'package:akyatbukid/widgets/authtextformfield_widget.dart';
+import 'package:akyatbukid/widgets/text_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'Services/authServices.dart';
+import 'services/authServices.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 
 // import 'package:akyatbukid/navbar.dart';
@@ -16,7 +18,7 @@ class SignupPage extends StatefulWidget {
 class SignupPageState extends State<SignupPage> {
   final _formKey = GlobalKey<FormState>();
   final emailExp =
-      new RegExp(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)");
+      RegExp(r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)');
   bool checkBoxValue = false;
   InputDecoration txtDecoration(var str) {
     return InputDecoration(
@@ -24,13 +26,13 @@ class SignupPageState extends State<SignupPage> {
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide.none),
         filled: true,
-        fillColor: Color(0xFFe7edeb),
+        fillColor: const Color(0xFFe7edeb),
         hintText: str,
         errorStyle:
             TextStyle(color: Colors.orange[400], fontWeight: FontWeight.bold));
   }
 
-  bool _isDisabled = false;
+  final bool _isDisabled = false;
   bool _isLoading = false;
   var errorMessage;
   bool _passwordVisible1 = false;
@@ -59,25 +61,18 @@ class SignupPageState extends State<SignupPage> {
         });
         _formKey.currentState!.save();
         try {
-          await AuthService.signUp(
-              context,
-              _email!,
-              _password!,
-              _fname!,
-              _lname!,
-              _address!,
-              _contact!,
-              _birthday!,
-              _usertype!,
-              _operatorId!);
+          // ignore: use_build_context_synchronously
+          AuthService.signUp(context, _email!, _password!, _fname!, _lname!,
+              _address!, _contact!, _birthday!, _usertype!, _operatorId!);
 
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text('Sign Up Successfully!')));
-        } on PlatformException catch (e) {
+          // ignore: use_build_context_synchronously
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Sign Up Successfully!')));
+        } on PlatformException {
           setState(() {
             _isLoading = false;
           });
-          throw (e);
+          rethrow;
         }
       }
       return a;
@@ -86,7 +81,7 @@ class SignupPageState extends State<SignupPage> {
       print(_operatorId);
       // 'TourOperator Id does not exists!'
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('TourOperator does not exist!')),
+        const SnackBar(content: Text('TourOperator does not exist!')),
       );
       return null;
     }
@@ -100,21 +95,22 @@ class SignupPageState extends State<SignupPage> {
       _formKey.currentState!.save();
       try {
         await AuthService.signUp(context, _email!, _password!, _fname!, _lname!,
-            _address!, _contact!, _birthday!, _usertype!, _operatorId = "");
+            _address!, _contact!, _birthday!, _usertype!, _operatorId = '');
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Sign Up Successfully!')),
+          const SnackBar(content: Text('Sign Up Successfully!')),
         );
       } on PlatformException catch (err) {
         setState(() {
           _isLoading = false;
           errorMessage = err.toString();
         });
-        throw (err);
+        rethrow;
       }
     }
   }
 
+  @override
   void initState() {
     super.initState();
     _usertype = '';
@@ -125,15 +121,15 @@ class SignupPageState extends State<SignupPage> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
-          iconTheme: IconThemeData(color: Colors.black),
-          title: Image(
+          iconTheme: const IconThemeData(color: Colors.black),
+          title: const Image(
             image: AssetImage('assets/images/Logo2.png'),
             width: 100.0,
             height: 100.0,
           ),
           centerTitle: true,
         ),
-        backgroundColor: Color.fromRGBO(69, 95, 70, 1.0),
+        backgroundColor: const Color.fromRGBO(69, 95, 70, 1.0),
         body: Theme(
             data: ThemeData(unselectedWidgetColor: Colors.white),
             child: Center(
@@ -146,55 +142,23 @@ class SignupPageState extends State<SignupPage> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Container(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 0, 0, 30),
-                                  child: Text(
-                                    'SIGNUP',
-                                    style: TextStyle(
-                                        fontSize: 30,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white),
-                                  )),
-                              Container(
-                                alignment: Alignment.topLeft,
-                                padding: EdgeInsets.fromLTRB(5, 0, 0, 3),
-                                child: Text(
-                                  'Email',
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.white),
-                                ),
+                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 30),
+                                child: const TextWidget(
+                                    text: 'SIGNUP',
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
                               ),
-                              TextFormField(
-                                validator: (value) {
-                                  if (value!.isEmpty)
-                                    return 'Email is Required';
-                                  else if (emailExp.hasMatch(value) == false)
-                                    return 'Invalid Email';
-
-                                  return null;
-                                },
-                                keyboardType: TextInputType.emailAddress,
-                                decoration: txtDecoration('Email Address'),
-                                onChanged: (value) {
-                                  _email = value;
-                                },
-                              ),
-                              SizedBox(height: 8.0),
-                              Container(
-                                alignment: Alignment.topLeft,
-                                padding: EdgeInsets.fromLTRB(5, 0, 0, 3),
-                                child: Text(
-                                  'Password',
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.white),
-                                ),
-                              ),
+                              const AuthTextFormFieldWidget(
+                                  label: 'Email Address'),
+                              const SizedBox(height: 8.0),
                               TextFormField(
                                 validator: (value) {
                                   if (value!.isEmpty) {
                                     return 'Password is Required';
-                                  } else if (value.length < 8)
+                                  } else if (value.length < 8) {
                                     return 'Password must be at least 8 characters';
+                                  }
                                   return null;
                                 },
                                 keyboardType: TextInputType.visiblePassword,
@@ -203,8 +167,8 @@ class SignupPageState extends State<SignupPage> {
                                         borderRadius: BorderRadius.circular(10),
                                         borderSide: BorderSide.none),
                                     filled: true,
-                                    fillColor: Color(0xFFe7edeb),
-                                    hintText: "Password",
+                                    fillColor: const Color(0xFFe7edeb),
+                                    hintText: 'Password',
                                     suffixIcon: IconButton(
                                       icon: Icon(
                                         _passwordVisible1
@@ -227,22 +191,14 @@ class SignupPageState extends State<SignupPage> {
                                 },
                                 obscureText: !_passwordVisible1,
                               ),
-                              SizedBox(height: 8.0),
-                              Container(
-                                alignment: Alignment.topLeft,
-                                padding: EdgeInsets.fromLTRB(5, 0, 0, 3),
-                                child: Text(
-                                  'Confirm Password',
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.white),
-                                ),
-                              ),
+                              const SizedBox(height: 8.0),
                               TextFormField(
                                 validator: (value) {
-                                  if (value!.isEmpty)
+                                  if (value!.isEmpty) {
                                     return 'Please confirm your password';
-                                  else if (value != _password)
+                                  } else if (value != _password) {
                                     return 'Password did not match';
+                                  }
 
                                   return null;
                                 },
@@ -252,8 +208,8 @@ class SignupPageState extends State<SignupPage> {
                                         borderRadius: BorderRadius.circular(10),
                                         borderSide: BorderSide.none),
                                     filled: true,
-                                    fillColor: Color(0xFFe7edeb),
-                                    hintText: "Confirm Password",
+                                    fillColor: const Color(0xFFe7edeb),
+                                    hintText: 'Confirm Password',
                                     suffixIcon: IconButton(
                                       icon: Icon(
                                         _passwordVisible2
@@ -273,16 +229,7 @@ class SignupPageState extends State<SignupPage> {
                                         fontWeight: FontWeight.bold)),
                                 obscureText: !_passwordVisible2,
                               ),
-                              SizedBox(height: 8.0),
-                              Container(
-                                alignment: Alignment.topLeft,
-                                padding: EdgeInsets.fromLTRB(5, 0, 0, 3),
-                                child: Text(
-                                  'Full Name',
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.white),
-                                ),
-                              ),
+                              const SizedBox(height: 8.0),
                               Container(
                                 child: Row(
                                   mainAxisAlignment:
@@ -303,7 +250,7 @@ class SignupPageState extends State<SignupPage> {
                                         },
                                       ),
                                     ),
-                                    SizedBox(width: 5.0),
+                                    const SizedBox(width: 5.0),
                                     Flexible(
                                       child: TextFormField(
                                         validator: (value) {
@@ -322,16 +269,7 @@ class SignupPageState extends State<SignupPage> {
                                   ],
                                 ),
                               ),
-                              SizedBox(height: 8.0),
-                              Container(
-                                alignment: Alignment.topLeft,
-                                padding: EdgeInsets.fromLTRB(5, 0, 0, 3),
-                                child: Text(
-                                  'Address',
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.white),
-                                ),
-                              ),
+                              const SizedBox(height: 8.0),
                               TextFormField(
                                 validator: (value) {
                                   if (value!.isEmpty) {
@@ -344,22 +282,14 @@ class SignupPageState extends State<SignupPage> {
                                   _address = value;
                                 },
                               ),
-                              SizedBox(height: 8.0),
-                              Container(
-                                alignment: Alignment.topLeft,
-                                padding: EdgeInsets.fromLTRB(5, 0, 0, 3),
-                                child: Text(
-                                  'Contact Number',
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.white),
-                                ),
-                              ),
+                              const SizedBox(height: 8.0),
                               TextFormField(
                                 validator: (value) {
                                   if (value!.isEmpty) {
                                     return 'Contact number is Required';
-                                  } else if (value.length < 11)
+                                  } else if (value.length < 11) {
                                     return 'Invalid Contact number';
+                                  }
                                   return null;
                                 },
                                 keyboardType: TextInputType.number,
@@ -368,16 +298,7 @@ class SignupPageState extends State<SignupPage> {
                                   _contact = value;
                                 },
                               ),
-                              SizedBox(height: 8.0),
-                              Container(
-                                alignment: Alignment.topLeft,
-                                padding: EdgeInsets.fromLTRB(5, 0, 0, 3),
-                                child: Text(
-                                  'Birthday',
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.white),
-                                ),
-                              ),
+                              const SizedBox(height: 8.0),
                               TextFormField(
                                 validator: (value) {
                                   if (value!.isEmpty) {
@@ -391,23 +312,21 @@ class SignupPageState extends State<SignupPage> {
                                   _birthday = value;
                                 },
                               ),
-                              SizedBox(height: 20.0),
+                              const SizedBox(height: 20.0),
                               Container(
-                                decoration: BoxDecoration(
+                                decoration: const BoxDecoration(
                                     border: Border(
                                         bottom: BorderSide(
                                             width: 1.5,
                                             color: Colors.black38))),
                               ),
-                              SizedBox(height: 20.0),
+                              const SizedBox(height: 20.0),
                               Container(
                                 alignment: Alignment.topLeft,
-                                padding: EdgeInsets.fromLTRB(5, 0, 0, 3),
-                                child: Text(
-                                  'What are you? ',
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.white),
-                                ),
+                                padding: const EdgeInsets.fromLTRB(5, 0, 0, 3),
+                                child: const TextWidget(
+                                    text: 'What are you? ',
+                                    color: Colors.white),
                               ),
                               Container(
                                 alignment: Alignment.topLeft,
@@ -423,12 +342,10 @@ class SignupPageState extends State<SignupPage> {
                                         });
                                       },
                                     ),
-                                    Text(
-                                      'Hiker',
-                                      style: TextStyle(color: Colors.white),
-                                    )
+                                    const TextWidget(
+                                        text: 'Hiker', color: Colors.white)
                                   ]),
-                                  SizedBox(width: 15.0),
+                                  const SizedBox(width: 15.0),
                                   Row(children: [
                                     Radio(
                                       activeColor: Colors.orange[400],
@@ -440,23 +357,22 @@ class SignupPageState extends State<SignupPage> {
                                         });
                                       },
                                     ),
-                                    Text(
-                                      'Tour Operator',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
+                                    const TextWidget(
+                                        text: 'Tour Operator',
+                                        color: Colors.white),
                                     // Text('$_usertype', style: TextStyle(fontSize: 23),)
                                   ]),
                                 ]),
                               ),
-                              SizedBox(height: 15.0),
+                              const SizedBox(height: 15.0),
                               _usertype == null || _usertype == 'TOUR OPERATOR'
                                   ? Column(
                                       children: [
                                         Container(
                                           alignment: Alignment.topLeft,
-                                          padding:
-                                              EdgeInsets.fromLTRB(5, 0, 0, 3),
-                                          child: Text(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              5, 0, 0, 3),
+                                          child: const Text(
                                             'ID No.',
                                             style: TextStyle(
                                                 fontSize: 16,
@@ -467,8 +383,9 @@ class SignupPageState extends State<SignupPage> {
                                           validator: (value) {
                                             if (value!.isEmpty) {
                                               return 'Tour Operator ID No. is Required';
-                                            } else if (value.length < 5)
+                                            } else if (value.length < 5) {
                                               return 'Invalid ID. No';
+                                            }
                                             return null;
                                           },
                                           enabled: !_isDisabled,
@@ -480,8 +397,8 @@ class SignupPageState extends State<SignupPage> {
                                         ),
                                       ],
                                     )
-                                  : SizedBox(height: 5.0),
-                              SizedBox(height: 15.0),
+                                  : const SizedBox(height: 5.0),
+                              const SizedBox(height: 15.0),
                               Row(
                                 children: [
                                   Checkbox(
@@ -494,7 +411,8 @@ class SignupPageState extends State<SignupPage> {
                                       }),
                                   Container(
                                     alignment: Alignment.centerRight,
-                                    padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                    padding:
+                                        const EdgeInsets.fromLTRB(5, 0, 0, 0),
                                     child: TextButton(
                                       style: TextButton.styleFrom(
                                         textStyle: const TextStyle(
@@ -506,48 +424,38 @@ class SignupPageState extends State<SignupPage> {
                                           headerAnimationLoop: false,
                                           dialogType: DialogType.INFO,
                                           animType: AnimType.BOTTOMSLIDE,
-                                          title: 'TERMS AND CONDITIONS',
-                                          desc:
-                                              "1. Introduction\n Welcome to Akyat Bukid!\n"
-                                              "These Terms of Service govern your use of our application operated by Akyat Bukid.\n\n"
-                                              "2. Content\n Our Service allows you to post, link, store, share and otherwise make available certain "
-                                              "information, text, graphics, videos, or other material.\n\n"
-                                              "3. Amendments To Terms\n We may amend Terms at any time by posting the amended terms on this site. "
-                                              "It is your responsibility to review these Terms periodically.\n\n"
-                                              "4. Acknowledgement\n BY USING SERVICE OR OTHER SERVICES PROVIDED BY THE US, YOU ACKNOWLEDGE THAT YOU "
-                                              "HAVE READ THESE TERMS OF SERVICE AND AGREE TO BE BOUND BY THEM.\n\n"
-                                              "5. Contact Us\n Please send your feedback, comments, requests for technical support by email: akyatbukid@gmail.com.\n\n\n"
-                                              "These Terms of Service were created for akyatbukid.com by PolicyMaker.io on 2022-01-14.",
+                                          title: Labels.termAndCondition,
+                                          desc: Labels
+                                              .termsAndConditionDescription,
                                         ).show();
                                       },
-                                      child: const Text(
-                                        'By tapping "Signup" you agree to our \nTerms & Policies ** READ MORE',
-                                        style: TextStyle(
-                                            fontSize: 14, color: Colors.white),
-                                      ),
+                                      child: const TextWidget(
+                                          text:
+                                              'By tapping "Signup" you agree to our \nTerms & Policies',
+                                          color: Colors.white),
                                     ),
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 30.0),
+                              const SizedBox(height: 30.0),
                               ElevatedButton(
                                 onPressed: () async {
                                   _usertype == 'TOUR OPERATOR'
                                       ? submitOperator()
                                       : submitHiker();
                                 },
-                                child: Text('SIGNUP'),
                                 style: ElevatedButton.styleFrom(
-                                    primary: Colors.orange[400],
-                                    onPrimary: Colors.black,
+                                    foregroundColor: Colors.black,
+                                    backgroundColor: const Color(0xFFFFA726),
                                     padding: const EdgeInsets.fromLTRB(
                                         57, 10, 57, 10),
                                     shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(10))),
-                                    textStyle: TextStyle(
+                                    textStyle: const TextStyle(
                                       fontSize: 23,
                                     )),
+                                child: const Text('SIGNUP'),
                               ),
                             ]))))));
   }

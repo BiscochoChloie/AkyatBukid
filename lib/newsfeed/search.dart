@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:akyatbukid/Models/UserModel.dart';
 import 'package:akyatbukid/screens/profile.dart';
-import 'package:akyatbukid/Services/dataServices.dart';
+import 'package:akyatbukid/services/dataServices.dart';
 
 class SearchPage extends StatefulWidget {
   final UserModel userModel;
@@ -16,7 +16,7 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   Future<QuerySnapshot>? _users;
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
 
   // clearSearch() {
   //   _searchController.clear();
@@ -37,15 +37,16 @@ class _SearchPageState extends State<SearchPage> {
           leading: CircleAvatar(
             radius: 20,
             backgroundImage: user.profilePicture.isEmpty
-                ? AssetImage('assets/images/placeholder.png')
+                ? const AssetImage('assets/images/placeholder.png')
                 : NetworkImage(user.profilePicture) as ImageProvider,
           ),
-          title: Text(user.fname + ' ' + user.lname,
-              style: TextStyle(
+          title: Text('${user.fname} ${user.lname}',
+              style: const TextStyle(
                   // fontWeight: FontWeight.bold
                   )),
           subtitle: Text(user.usertype,
-              style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+              style:
+                  const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => ProfilePage(
@@ -53,7 +54,7 @@ class _SearchPageState extends State<SearchPage> {
                     )));
           },
         ),
-        Divider(),
+        const Divider(),
       ],
     );
   }
@@ -63,28 +64,29 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
         elevation: 0.5,
-        title: Image(
+        title: const Image(
           image: AssetImage('assets/images/Logo2.png'),
           width: 100.0,
           height: 100.0,
         ),
         centerTitle: true,
         bottom: PreferredSize(
+          preferredSize: const Size(50, 80),
           child: Container(
             padding: const EdgeInsets.fromLTRB(15.0, 0, 15.0, 15.0),
             child: TextField(
               textCapitalization: TextCapitalization.none,
               controller: _searchController,
               decoration: InputDecoration(
-                contentPadding: EdgeInsets.symmetric(vertical: 15),
+                contentPadding: const EdgeInsets.symmetric(vertical: 15),
                 hintText: 'Search',
-                hintStyle: TextStyle(color: Colors.grey),
+                hintStyle: const TextStyle(color: Colors.grey),
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                     borderSide: BorderSide.none),
-                prefixIcon: Icon(Icons.search, color: Colors.black),
+                prefixIcon: const Icon(Icons.search, color: Colors.black),
                 suffixIcon: IconButton(
                   icon: Icon(
                     Icons.clear,
@@ -106,7 +108,6 @@ class _SearchPageState extends State<SearchPage> {
               },
             ),
           ),
-          preferredSize: Size(50, 80),
         ),
       ),
       body: _users == null
@@ -126,12 +127,12 @@ class _SearchPageState extends State<SearchPage> {
               future: _users,
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (!snapshot.hasData) {
-                  return Center(
+                  return const Center(
                     child: CircularProgressIndicator(),
                   );
                 }
                 if (snapshot.data.docs.length == 0) {
-                  return Center(
+                  return const Center(
                     child: Text('No users found!'),
                   );
                 }

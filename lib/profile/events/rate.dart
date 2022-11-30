@@ -1,6 +1,6 @@
 import 'package:akyatbukid/Models/EventModel.dart';
 import 'package:akyatbukid/Models/rating_information.dart';
-import 'package:akyatbukid/Services/separator.dart';
+import 'package:akyatbukid/services/separator.dart';
 import 'package:akyatbukid/controller/event_controller.dart';
 import 'package:akyatbukid/profile/events/review.dart';
 import 'package:flutter/material.dart';

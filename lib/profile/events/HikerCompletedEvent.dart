@@ -19,7 +19,6 @@ class HikerCompletedEvent extends StatefulWidget {
 }
 
 class _HikerCompletedEventState extends State<HikerCompletedEvent> {
-
   static final DateTime now = DateTime.now();
 
   @override
@@ -45,7 +44,7 @@ class _HikerCompletedEventState extends State<HikerCompletedEvent> {
               stream: bookperId,
               builder: (context, snapshot) {
                 try {
-                  if (!snapshot.hasData) return Text("Loading");
+                  if (!snapshot.hasData) return const Text("Loading");
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(
                       child: CircularProgressIndicator(),
@@ -58,11 +57,14 @@ class _HikerCompletedEventState extends State<HikerCompletedEvent> {
                             BookModel.fromDoc(doc: snapshot.data!.docs[index]);
                         BookModel.fromDoc(doc: snapshot.data!.docs[index]);
 
-                        return 
-                        GestureDetector(
+                        return GestureDetector(
                             onTap: () {
-                              EventController().getEvent(id:bookModel.eventId ).first.then((value) {
-                                EventModel event = EventModel.fromDoc(doc: value);
+                              EventController()
+                                  .getEvent(id: bookModel.eventId)
+                                  .first
+                                  .then((value) {
+                                EventModel event =
+                                    EventModel.fromDoc(doc: value);
                                 // event.ratingInformation.forEach((element) {
                                 //
                                 //   print(element);
@@ -75,16 +77,15 @@ class _HikerCompletedEventState extends State<HikerCompletedEvent> {
                                   ),
                                 );
                               });
-
                             },
-                            child:Card(
+                            child: Card(
                                 color: Colors.red[200],
                                 elevation: 5.0,
                                 child: Padding(
                                   padding: const EdgeInsets.all(10.0),
                                   child: Row(
                                     crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Icon(
                                         Icons.event,
@@ -113,9 +114,7 @@ class _HikerCompletedEventState extends State<HikerCompletedEvent> {
                                     ],
                                   ),
                                   // )
-                                ))
-                        );
-
+                                )));
                       });
                 } catch (e) {
                   return Text("Loading");

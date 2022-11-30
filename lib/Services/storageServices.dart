@@ -1,4 +1,4 @@
-import 'dart:io';
+ import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -8,7 +8,7 @@ import 'package:uuid/uuid.dart';
 
 class StorageService {
   static Future<String> uploadProfilePicture(String url, File imageFile) async {
-    String? uniquePhotoId = Uuid().v4();
+    String? uniquePhotoId = const Uuid().v4();
     File? image = await compressImage(uniquePhotoId, imageFile);
 
     if (url.isNotEmpty) {
@@ -22,7 +22,7 @@ class StorageService {
     String downloadUrl = await taskSnapshot.ref.getDownloadURL();
     return downloadUrl;
   }
-  
+
   static Future<String> uploadStatusPicture(File imageFile) async {
     String uniquePhotoId = Uuid().v4();
     File? image = await compressImage(uniquePhotoId, imageFile);

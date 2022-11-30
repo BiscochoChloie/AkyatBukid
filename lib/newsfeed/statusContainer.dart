@@ -3,7 +3,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:akyatbukid/Models/UserModel.dart';
-import 'package:akyatbukid/Services/dataServices.dart';
+import 'package:akyatbukid/services/dataServices.dart';
 
 class StatusContainer extends StatefulWidget {
   final StatusModel status;
@@ -76,7 +76,7 @@ class _StatusContainerState extends State<StatusContainer> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+      padding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
       child: Card(
         elevation: 5.0,
         child: Padding(
@@ -85,7 +85,7 @@ class _StatusContainerState extends State<StatusContainer> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               widget.status.image.isEmpty
-                  ? SizedBox.shrink()
+                  ? const SizedBox.shrink()
                   : Column(
                       children: [
                         Padding(
@@ -110,15 +110,15 @@ class _StatusContainerState extends State<StatusContainer> {
                     child: CircleAvatar(
                       radius: 20,
                       backgroundImage: widget.author.profilePicture.isEmpty
-                          ? AssetImage('assets/images/placeholder.png')
+                          ? const AssetImage('assets/images/placeholder.png')
                           : NetworkImage(widget.author.profilePicture)
                               as ImageProvider,
                     ),
                   ),
                   Text(
-                    widget.author.fname + " " + widget.author.lname,
+                    "${widget.author.fname} ${widget.author.lname}",
                     textAlign: TextAlign.right,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.bold,
                     ),
@@ -130,16 +130,16 @@ class _StatusContainerState extends State<StatusContainer> {
                             widget.status.authorId ==
                                 FirebaseAuth.instance.currentUser!.uid
                         ? PopupMenuButton(
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.more_horiz,
                               color: Colors.black,
                               size: 30,
                             ),
                             itemBuilder: (_) {
                               return <PopupMenuItem<String>>[
-                                new PopupMenuItem(
-                                  child: Text('Delete'),
+                                const PopupMenuItem(
                                   value: 'delete',
+                                  child: Text('Delete'),
                                 ),
                               ];
                             },
@@ -147,9 +147,9 @@ class _StatusContainerState extends State<StatusContainer> {
                               if (selectedItem == 'delete') {
                                 AwesomeDialog(
                                   context: context,
-                                  dialogType: DialogType.QUESTION,
-                                  buttonsBorderRadius:
-                                      BorderRadius.all(Radius.circular(2)),
+                                  // dialogType: DialogType.QUESTION,
+                                  buttonsBorderRadius: const BorderRadius.all(
+                                      Radius.circular(2)),
                                   headerAnimationLoop: false,
                                   animType: AnimType.BOTTOMSLIDE,
                                   title: 'Delete Post?',
@@ -165,21 +165,21 @@ class _StatusContainerState extends State<StatusContainer> {
                                 ).show();
                               }
                             })
-                        : SizedBox(height: 5),
+                        : const SizedBox(height: 5),
                   ),
                 ],
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.fromLTRB(8.0, 5.0, 4.0, 10.0),
                 child: Text(
                   widget.status.text,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 15,
                   ),
                 ),
               ),
-              Divider(height: 2, color: Colors.black),
+              const Divider(height: 2, color: Colors.black),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -216,11 +216,11 @@ class _StatusContainerState extends State<StatusContainer> {
                   // ),
                   Row(
                     children: [
-                      Icon(Icons.location_on_rounded,
+                      const Icon(Icons.location_on_rounded,
                           size: 20, color: Colors.grey),
                       Text(
                         widget.status.bukid,
-                        style: TextStyle(color: Colors.grey),
+                        style: const TextStyle(color: Colors.grey),
                       ),
                     ],
                   )

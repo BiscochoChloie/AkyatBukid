@@ -38,8 +38,8 @@ class NavPageState extends State<NavPage> {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: Colors.white,
-          iconTheme: IconThemeData(color: Colors.black),
-          title: Image(
+          iconTheme: const IconThemeData(color: Colors.black),
+          title: const Image(
             image: AssetImage('assets/images/Logo2.png'),
             width: 100.0,
             height: 100.0,
@@ -53,7 +53,7 @@ class NavPageState extends State<NavPage> {
           onTap: (index) => setState(() {
             selectedIndex = index;
           }),
-          items: [
+          items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
             BottomNavigationBarItem(icon: Icon(Icons.hiking), label: 'Book'),
             BottomNavigationBarItem(

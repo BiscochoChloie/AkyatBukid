@@ -11,41 +11,41 @@ class HomePage extends StatelessWidget {
         elevation: 0,
         toolbarHeight: 0,
       ),
-      backgroundColor: Color.fromRGBO(69, 95, 70, 1.0),
+      backgroundColor: const Color.fromRGBO(69, 95, 70, 1.0),
       body: Column(children: <Widget>[
-        Image(image: AssetImage("assets/images/Logo1.png")),
+        const Image(image: AssetImage("assets/images/Logo1.png")),
         ElevatedButton(
           onPressed: () {
             Navigator.push(
                 context, MaterialPageRoute(builder: (context) => LoginPage()));
           },
-          child: Text('LOGIN'),
           style: ElevatedButton.styleFrom(
-              primary: Colors.orange[400],
+              backgroundColor: Colors.orange[400],
               onPrimary: Colors.black,
               padding: const EdgeInsets.fromLTRB(57, 10, 57, 10),
               shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10))),
-              textStyle: TextStyle(
+              textStyle: const TextStyle(
                 fontSize: 23,
               )),
+          child: const Text('LOGIN'),
         ),
         const SizedBox(height: 20),
         ElevatedButton(
-          child: Text(
-            'SIGNUP',
-          ),
           style: ElevatedButton.styleFrom(
-              primary: Colors.orange[400],
+              backgroundColor: Colors.orange[400],
               onPrimary: Colors.black,
               padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
               shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10))),
-              textStyle: TextStyle(fontSize: 23)),
-          onPressed: (){
-
-            Navigator.push(context, MaterialPageRoute(builder: (context) => SignupPage()));
+              textStyle: const TextStyle(fontSize: 23)),
+          onPressed: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => SignupPage()));
           },
+          child: Text(
+            'SIGNUP',
+          ),
         )
       ]),
     );
